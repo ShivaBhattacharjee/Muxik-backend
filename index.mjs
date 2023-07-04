@@ -15,7 +15,8 @@ const app = express()
 // middlewares
 app.use(express.json())
 app.use(cors({
-    origin:"*"
+    "origin": "*",
+    "methods": "GET,PUT,POST",
 }))
 app.use(morgan('tiny'))
 app.disable('x-powered-by')
@@ -25,19 +26,21 @@ app.disable('x-powered-by')
 connect().then(()=>{
     try{
         app.listen(process.env.PORT,()=>{
-            console.log("server started at http://localhost:" + process.env.PORT)
+            console.log("📑 Visit the docs at https://github.com")
+            console.log("🎶 Visit Muxik https://muxik.netlify.app/")
+            console.log("🗄️ Server started at http://localhost:" + process.env.PORT)
         })
     }catch(error){
-        console.log("Cannot connect to the server")
+        console.log("⚠️ Cannot connect to server")
     }
 }).catch(error=>{
-    console.log("cannot connect to the database" + error)
+    console.log("⚠️ Connection failed " + error)
 })
 
 // home page route
 
 app.get("/",(req,res)=>{
-    res.status(201).send("Hello welcome to Muxik backend 👋 \n Visit Docs : https://xyz.com/docs ")
+    res.status(201).send("👋 welcome to Muxik backend  \n Visit Muxik at: <a href='https://muxik.netlify.app' target='_blank'>https://muxik.netlify.app</a>")
 })
 
 // app routes

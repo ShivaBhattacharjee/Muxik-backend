@@ -1,6 +1,7 @@
 {
   "name": "backend",
   "version": "1.0.0",
+  "private": false,
   "description": "",
   "type": "module",
   "main": "index.js",
@@ -8,10 +9,16 @@
     "start": "node index.mjs",
     "dev": "nodemon index.mjs"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "music",
+    "express",
+    "login",
+    "reset password"
+  ],
+  "author": "Shiva Bhattacharjee",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^5.1.0",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
