@@ -10,10 +10,17 @@ export async function register(req, res) {
         
         const existingUser = await User.findOne({ $or: [{ username }, { email }] });
         if (existingUser) {
-            return res.status(400).send({
-                message: "Username or email already exists"
-            });
+            if (existingUser.email === email) {
+                return res.status(400).send({
+                    message: "An account with this email already exists"
+                });
+            } else if (existingUser.username === username) {
+                return res.status(400).send({
+                    message: "Username is already taken"
+                });
+            }
         }
+        
         
         // If the username and email are unique, proceed with user registration
         
@@ -41,7 +48,7 @@ export async function register(req, res) {
 
 // post method login route
 export async function login(req, res) {
-    res.json('Login Route')
+    const { username, password } = req.body;
 }
 
 // get request to get user data after login
