@@ -7,7 +7,7 @@ async function connect(){
 
     mongoose.set('strictQuery', true)
     const db = await mongoose.connect(getUri)
-    console.log("Database created hehe")
+    console.log("🥳 Databse created successfully")
     return db
 }
 export default connect

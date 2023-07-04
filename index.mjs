@@ -42,4 +42,4 @@ app.get("/",(req,res)=>{
 
 // app routes
 
-app.use('/api/v1',router)
+app.use('/api',router)
