@@ -1,5 +1,9 @@
+
 import User from "../models/user.model.js";
 import bcrypt from "bcrypt";
+import dotenv from "dotenv"
+import jwt  from "jsonwebtoken";
+dotenv.config({path:'../.env'})
 
 // post method register route
 export async function register(req, res) {
@@ -49,7 +53,42 @@ export async function register(req, res) {
 // post method login route
 export async function login(req, res) {
     const { username, password } = req.body;
+    try {
+        const user = await User.findOne({ username });
+        if (!user) {
+            return res.status(400).send({
+                message: "Invalid username "
+            });
+        }
+
+        const passwordCheck = await bcrypt.compare(password, user.password);
+        if (!passwordCheck) {
+            return res.status(400).send({
+                message: "Invalid password"
+            });
+        }
+
+        const token = jwt.sign(
+            {
+                userId: user._id,
+                username: user.username
+            },
+            process.env.JWT_SECRET,
+            { expiresIn: "48h" }
+        );
+
+        res.status(200).send({
+            message: "Login successful",
+            token: token
+        });
+    } catch (error) {
+        return res.status(500).send({
+            message: "Something went wrong while login ",
+            error: error.message
+        });
+    }
 }
+
 
 // get request to get user data after login
 export async function getUser(req, res) {
