@@ -57,14 +57,14 @@ export async function login(req, res) {
         const user = await User.findOne({ username });
         if (!user) {
             return res.status(400).send({
-                message: "Invalid username "
+                message: "Username didnot match"
             });
         }
 
         const passwordCheck = await bcrypt.compare(password, user.password);
         if (!passwordCheck) {
             return res.status(400).send({
-                message: "Invalid password"
+                message: "Password did not match"
             });
         }
 
