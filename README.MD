@@ -1,5 +1,5 @@
 ###  Installation
-docker file will be availabe soon
+docker image will be availabe soon
 
 local : 
 
