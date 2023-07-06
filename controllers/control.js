@@ -100,15 +100,16 @@ export async function getUser(req, res) {
             });
         }
 
-        const user = await User.findOne({ username }).exec();
+        const user = await User.findOne({ username }).select("-password").exec();
 
         if (!user) {
             return res.status(404).send({
                 message: "User not found"
             });
         }
-
+        
         return res.status(200).send(user);
+          
     } catch (error) {
         return res.status(500).send({
             message: "Unable to get user",
