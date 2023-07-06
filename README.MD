@@ -22,7 +22,7 @@ npm dev / to start in developement mode
 }
  ```
                
-| API           | Type     | Description                                                                                                                     |
+| API ROUTES          | Type     | Description                                                                                                                     |
 | ------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------- |
 | `/api/register` | POST   | Make a post request to register a user (username, email, and password are mandatory, profile is optional)  |
 | `/api/login`    | POST   | Make a post request with the email and password to retrieve data                                                            |
