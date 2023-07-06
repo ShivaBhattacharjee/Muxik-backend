@@ -92,8 +92,31 @@ export async function login(req, res) {
 
 // get request to get user data after login
 export async function getUser(req, res) {
-    res.json('User Route')
+    const { username } = req.params;
+    try {
+        if (!username) {
+            return res.status(400).send({
+                message: "Invalid username"
+            });
+        }
+
+        const user = await User.findOne({ username }).exec();
+
+        if (!user) {
+            return res.status(404).send({
+                message: "User not found"
+            });
+        }
+
+        return res.status(200).send(user);
+    } catch (error) {
+        return res.status(500).send({
+            message: "Unable to get user",
+            error: error.message
+        });
+    }
 }
+
 
 // put request to update user
 export async function updateUser(req, res) {

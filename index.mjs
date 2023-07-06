@@ -26,7 +26,7 @@ app.disable('x-powered-by')
 connect().then(()=>{
     try{
         app.listen(process.env.PORT,()=>{
-            console.log("📑 Visit the docs at https://github.com")
+            console.log("📑 Visit the docs at https://github.com/ShivaBhattacharjee/Muxik-backend/blob/main/README.MD")
             console.log("🎶 Visit Muxik https://muxik.netlify.app/")
             console.log("🗄️ Server started at http://localhost:" + process.env.PORT)
         })
