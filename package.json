@@ -1,10 +1,11 @@
 {
-  "name": "backend",
+  "name": "Muxik-backend",
   "version": "1.0.0",
   "private": false,
   "description": "",
   "type": "module",
   "main": "index.js",
+  "license": "Apache-2.0",
   "scripts": {
     "start": "node index.mjs",
     "dev": "nodemon index.mjs"
@@ -28,5 +29,6 @@
     "mongoose": "^7.3.1",
     "morgan": "^1.10.0",
     "nodemon": "^2.0.22"
-  }
+  },
+  "repository": "https://github.com/ShivaBhattacharjee/Muxik-backend.git"
 }
