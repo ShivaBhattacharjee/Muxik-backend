@@ -1,11 +1,10 @@
 {
-  "name": "Muxik-backend",
+  "name": "muxik-backend",
   "version": "1.0.0",
   "private": false,
   "description": "",
   "type": "module",
   "main": "index.js",
-  "license": "Apache-2.0",
   "scripts": {
     "start": "node index.mjs",
     "dev": "nodemon index.mjs"
@@ -17,7 +16,7 @@
     "reset password"
   ],
   "author": "Shiva Bhattacharjee",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "bcrypt": "^5.1.0",
     "cors": "^2.8.5",
