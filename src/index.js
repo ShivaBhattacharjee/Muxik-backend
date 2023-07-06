@@ -3,8 +3,8 @@ import express  from "express";
 import dotenv from "dotenv"
 import morgan from "morgan";
 import cors from "cors"
-import connect from "./config/Database.js";
-import router from "./routes/route.js"
+import connect from "../config/Database.js";
+import router from "../routes/route.js"
 // configuring .env
 dotenv.config({path:'./.env'})
 
