@@ -146,7 +146,7 @@ export async function updateUser(req, res) {
 }
 
 
-// get method to generate otp for verification
+// get method to generate OTP for verification
 export async function generateOTP(req, res) {
     const { userId } = req.query; // Assuming the user ID is provided as a query parameter
 
@@ -168,7 +168,7 @@ export async function generateOTP(req, res) {
             });
         }
 
-        const OTP = otpGenerator.generate(6, {lowerCaseAlphabets: false, upperCaseAlphabets: false, specialChars: false});
+        const OTP = otpGenerator.generate(6, { lowerCaseAlphabets: false, upperCaseAlphabets: false, specialChars: false });
         const expirationTime = Date.now() + 10 * 60 * 1000; // 10 minutes from now
 
         req.app.locals.OTP = {
@@ -178,7 +178,7 @@ export async function generateOTP(req, res) {
 
         res.status(201).send({
             OTP: OTP,
-            expiringat : expirationTime
+            expiringAt: expirationTime
         });
     } catch (error) {
         console.error("Error while generating OTP:", error);
@@ -189,13 +189,36 @@ export async function generateOTP(req, res) {
     }
 }
 
-
-
-// get method to verify otp
-
+// get method to verify OTP
 export async function verifyOTP(req, res) {
-    res.json("Verify Otp")
+    const { code } = req.query;
+
+    if (!req.app.locals.OTP) {
+        return res.status(400).send({
+            message: "OTP has expired"
+        });
+    }
+
+    if (Date.now() > req.app.locals.OTP.expiresAt) {
+        req.app.locals.OTP = null;
+        return res.status(400).send({
+            message: "OTP has expired"
+        });
+    }
+
+    if (parseInt(req.app.locals.OTP.value) === parseInt(code)) {
+        req.app.locals.OTP = null;
+        req.app.locals.resetSession = true;
+        return res.status(201).send({
+            message: "Verification successful"
+        });
+    }
+
+    return res.status(400).send({
+        message: "Invalid OTP"
+    });
 }
+
 
 // get request to create a reset session
 
