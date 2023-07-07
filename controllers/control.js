@@ -1,9 +1,7 @@
 
 import User from "../models/user.model.js";
 import bcrypt from "bcrypt";
-import dotenv from "dotenv"
 import jwt  from "jsonwebtoken";
-dotenv.config({path:'../.env'})
 
 // post method register route
 export async function register(req, res) {

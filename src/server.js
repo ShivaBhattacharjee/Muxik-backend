@@ -6,7 +6,7 @@ import cors from "cors"
 import connect from "../config/Database.js";
 import router from "../routes/route.js"
 // configuring .env
-dotenv.config({path:'./.env'})
+dotenv.config()
 
 
 // express port setup
