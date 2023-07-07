@@ -121,8 +121,31 @@ export async function getUser(req, res) {
 
 // put request to update user
 export async function updateUser(req, res) {
-    res.json("Update user route")
+    try {
+        const id = req.query.id;
+        if (id) {
+            const body = req.body;
+            
+            const result = await User.updateOne({ _id: id }, body);
+            
+            if (result.nModified === 0) {
+                return res.status(404).send({
+                    message: "User not found"
+                });
+            }
+            
+            return res.status(200).send({
+                message: "Records updated"
+            });
+        }
+    } catch (error) {
+        return res.status(500).json({
+            message: "Error in update user route. Contact the developer for help.",
+            error: error.message
+        });
+    }
 }
+
 
 // get method to generate otp for verification
 export async function generateOTP(req, res) {
