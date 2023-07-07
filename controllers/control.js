@@ -2,7 +2,7 @@
 import User from "../models/user.model.js";
 import bcrypt from "bcrypt";
 import jwt  from "jsonwebtoken";
-
+import otpGenerator from "otp-generator"
 // post method register route
 export async function register(req, res) {
     try {
@@ -147,8 +147,22 @@ export async function updateUser(req, res) {
 
 // get method to generate otp for verification
 export async function generateOTP(req, res) {
-    res.json("Otp Generation Route")
-}
+    const { username } = req.query;
+    // Use the username to find the user
+    const user = await User.findOne({ username });
+ 
+    if (!user) {
+      return res.status(400).send({
+        message: "Username does not exist"
+      });
+    }
+ 
+    req.app.locals.OTP = otpGenerator.generate(6, {lowerCaseAlphabets: false, upperCaseAlphabets: false, specialChars: false})
+    res.status(201).send({
+      OTP: req.app.locals.OTP
+    })
+ }
+ 
 
 // get method to verify otp
 

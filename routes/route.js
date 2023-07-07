@@ -1,7 +1,7 @@
 import { Router } from "express";
 import * as controller from "../controllers/control.js"
 const router = Router()
-import Auth from "../middleware/Authenticate.js";
+import Auth , {localVariables} from "../middleware/Authenticate.js";
 // post methods
 
 router.route('/register').post(controller.register)
@@ -12,7 +12,7 @@ router.route('/add-liked-songs').post()
 
 // get methods
 router.route('/user/:username').get(controller.getUser)
-router.route('/generateOTP').get(controller.generateOTP)
+router.route('/generateOTP').get(localVariables, controller.generateOTP);
 router.route('/verifyOTP').get(controller.verifyOTP)
 router.route('/createResetSession').get(controller.resetSession)
 router.route('/get-playlist').get()
