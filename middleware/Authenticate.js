@@ -20,6 +20,7 @@ export default async function Auth(req, res, next){
 export function localVariables(req, res, next){
     req.app.locals = {
         OTP : null,
+        expiresAt: null,
         resetSession : false
     }
     next()

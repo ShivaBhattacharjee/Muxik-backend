@@ -3,6 +3,7 @@ import User from "../models/user.model.js";
 import bcrypt from "bcrypt";
 import jwt  from "jsonwebtoken";
 import otpGenerator from "otp-generator"
+import mongoose from "mongoose";
 // post method register route
 export async function register(req, res) {
     try {
@@ -147,22 +148,48 @@ export async function updateUser(req, res) {
 
 // get method to generate otp for verification
 export async function generateOTP(req, res) {
-    const { username } = req.query;
-    // Use the username to find the user
-    const user = await User.findOne({ username });
- 
-    if (!user) {
-      return res.status(400).send({
-        message: "Username does not exist"
-      });
+    const { userId } = req.query; // Assuming the user ID is provided as a query parameter
+
+    try {
+        const isValidObjectId = mongoose.Types.ObjectId.isValid(userId);
+
+        if (!isValidObjectId) {
+            return res.status(400).send({
+                message: "Invalid user ID"
+            });
+        }
+
+        // Use the user ID to find the user
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return res.status(400).send({
+                message: "User not found"
+            });
+        }
+
+        const OTP = otpGenerator.generate(6, {lowerCaseAlphabets: false, upperCaseAlphabets: false, specialChars: false});
+        const expirationTime = Date.now() + 10 * 60 * 1000; // 10 minutes from now
+
+        req.app.locals.OTP = {
+            value: OTP,
+            expiresAt: expirationTime
+        };
+
+        res.status(201).send({
+            OTP: OTP,
+            expiringat : expirationTime
+        });
+    } catch (error) {
+        console.error("Error while generating OTP:", error);
+        res.status(500).send({
+            message: "Something went wrong while generating OTP",
+            error: error.message
+        });
     }
- 
-    req.app.locals.OTP = otpGenerator.generate(6, {lowerCaseAlphabets: false, upperCaseAlphabets: false, specialChars: false})
-    res.status(201).send({
-      OTP: req.app.locals.OTP
-    })
- }
- 
+}
+
+
 
 // get method to verify otp
 
