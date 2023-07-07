@@ -26,4 +26,5 @@ npm dev / to start in developement mode
 | ------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------- |
 | `/api/register` | POST   | Make a post request to register a user (username, email, and password are mandatory, profile is optional)  |
 | `/api/login`    | POST   | Make a post request with the email and password to retrieve data                                                            |
-| `/api/use/userid`    | GET   | Shows user information and profile      
+| `/api/use/userid`    | GET   | Shows user information and profile   
+| `/api/updateuser?id=<user.id>`    | PUT   | Updates user profile         
