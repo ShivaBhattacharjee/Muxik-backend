@@ -20,7 +20,7 @@ router.route('/get-liked-songs').get()
 
 // put methods
 router.route('/updateuser').put(Auth,controller.updateUser)
-router.route('/resetPassword').get(controller.passwordReset)
+router.route('/resetPassword').put(controller.passwordReset)
 
 
 export default router;
