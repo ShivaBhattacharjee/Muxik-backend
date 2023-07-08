@@ -5,6 +5,21 @@ import jwt  from "jsonwebtoken";
 import otpGenerator from "otp-generator"
 import mongoose from "mongoose";
 // post method register route
+export async function verifyUser(req, res, next){
+    try {
+        
+        const { username } = req.method == "GET" ? req.query : req.body;
+
+        // check the user existance
+        let exist = await UserModel.findOne({ username });
+        if(!exist) return res.status(404).send({ error : "Can't find User!"});
+        next();
+
+    } catch (error) {
+        return res.status(404).send({ error: "Authentication Error"});
+    }
+}
+
 export async function register(req, res) {
     try {
         const { username, password, profile, email } = req.body;

@@ -19,7 +19,7 @@ router.route('/get-playlist').get()
 router.route('/get-liked-songs').get()
 
 // put methods
-router.route('/updateuser').put(Auth,controller.updateUser)
+router.route('/updateuser').put(Auth, controller.updateUser)
 router.route('/resetPassword').put(controller.passwordReset)
 
 
