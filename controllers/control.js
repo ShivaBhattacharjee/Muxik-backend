@@ -223,7 +223,10 @@ export async function verifyOTP(req, res) {
 // get request to create a reset session
 
 export async function resetSession(req, res) {
-    res.json("this is reset session")
+    if(req.app.locals.resetSession){
+        return res.status(201).send({ flag : req.app.locals.resetSession})
+   }
+   return res.status(440).send({error : "Session expired!"})
 }
 
 
@@ -231,6 +234,26 @@ export async function resetSession(req, res) {
 // get request for reset session
 
 export async function passwordReset(req, res) {
-    res.json("Remember your password dumb ass")
+    try {
+        const { username, password } = req.body;
+    
+        const user = await User.findOne({ username });
+    
+        if (!user) {
+          return res.status(404).send({ message: "Username not found" });
+        }
+    
+        const hashedPassword = await bcrypt.hash(password, 10);
+    
+        User.updateOne({ username: user.username }, { password: hashedPassword }, function(err, data) {
+          if (err) {
+            return res.status(500).send({ error: "Error updating record" });
+          }
+          req.app.locals.resetSession = false; // reset session
+          return res.status(201).send({ msg: "Record updated" });
+        });
+      } catch (error) {
+        return res.status(500).send({ error: error.message });
+      }
 }
 
