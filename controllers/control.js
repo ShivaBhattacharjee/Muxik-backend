@@ -245,7 +245,11 @@ export async function passwordReset(req, res) {
     if (!user) {
       return res.status(404).send({ message: "Username not found" });
     }
+    const isMatch = await bcrypt.compare(password, user.password);
 
+    if (isMatch) {
+      return res.status(400).send({ message: "New password and old password cannot be the same" });
+    }
     const hashedPassword = await bcrypt.hash(password, 10);
 
     await User.updateOne({ username: user.username }, { password: hashedPassword });
