@@ -39,7 +39,7 @@ connect().then(()=>{
 
 // home page route
 
-app.get("/",(res)=>{
+app.get("/",(req,res)=>{
     res.status(201).send("👋 welcome to Muxik backend  \n Visit Muxik at: <a href='https://muxik.netlify.app' target='_blank'>https://muxik.netlify.app</a>")
 })
 
