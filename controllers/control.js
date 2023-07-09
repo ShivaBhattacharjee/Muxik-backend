@@ -5,21 +5,6 @@ import jwt  from "jsonwebtoken";
 import otpGenerator from "otp-generator"
 import mongoose from "mongoose";
 // post method register route
-export async function verifyUser(req, res, next){
-    try {
-        
-        const { username } = req.method == "GET" ? req.query : req.body;
-
-        // check the user existance
-        let exist = await UserModel.findOne({ username });
-        if(!exist) return res.status(404).send({ error : "Can't find User!"});
-        next();
-
-    } catch (error) {
-        return res.status(404).send({ error: "Authentication Error"});
-    }
-}
-
 export async function register(req, res) {
     try {
         const { username, password, profile, email } = req.body;
@@ -52,10 +37,17 @@ export async function register(req, res) {
         
         const savedUser = await newUser.save();
         
-        res.status(201).send({
-            message: "User registration successful",
-            user: savedUser
-        });
+        if(registerMail){
+            res.status(201).send({
+                message: "User registration successful",
+                user: savedUser,
+                mailSent : User.email
+            });
+        }else{
+            res.status(404).send({
+                message: "Unable to send verification email"            
+            })
+        }
     } catch (error) {
         return res.status(500).send({
             message: "Error in register route",
