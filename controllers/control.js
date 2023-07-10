@@ -37,17 +37,12 @@ export async function register(req, res) {
         
         const savedUser = await newUser.save();
         
-        if(registerMail){
             res.status(201).send({
                 message: "User registration successful",
                 user: savedUser,
                 mailSent : User.email
             });
-        }else{
-            res.status(404).send({
-                message: "Unable to send verification email"            
-            })
-        }
+            
     } catch (error) {
         return res.status(500).send({
             message: "Error in register route",
