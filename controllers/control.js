@@ -55,6 +55,8 @@ export async function register(req, res) {
     }
 }
 
+// verify otp for registered user
+
 // post method login route
 export async function login(req, res) {
     const { username, password } = req.body;

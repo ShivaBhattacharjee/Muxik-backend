@@ -25,9 +25,6 @@ export const UserSchema = new mongoose.Schema({
     profile: {
         type: String
     },
-    OneTimePassword:{
-        type : String
-    }
 })
 
 export default mongoose.model.Users || mongoose.model('User', UserSchema)
