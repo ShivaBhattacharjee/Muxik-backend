@@ -16,6 +16,7 @@ export async function register(req, res) {
             if (existingUser.email === email) {
                 return res.status(400).send({
                     message: "An account with this email already exists"
+                    
                 });
             } else if (existingUser.username === username) {
                 return res.status(400).send({
@@ -28,19 +29,22 @@ export async function register(req, res) {
         // If the username and email are unique, proceed with user registration
         
         const hashedPassword = await bcrypt.hash(password, 10);
+        const OTP = otpGenerator.generate(6, { lowerCaseAlphabets: false, upperCaseAlphabets: false, specialChars: false });
+        const expirationTime = Date.now() + 10 * 60 * 1000; // 10 minutes from now
         const newUser = new User({
             username,
             password: hashedPassword,
             profile: profile || "",
-            email
+            email,
         });
-        
         const savedUser = await newUser.save();
         
             res.status(201).send({
                 message: "User registration successful",
                 user: savedUser,
-                mailSent : User.email
+                verficicationMail : email,
+                OneTimePassword: OTP,
+                otpExpire : expirationTime
             });
             
     } catch (error) {

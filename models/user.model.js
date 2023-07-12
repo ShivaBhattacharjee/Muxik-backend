@@ -24,6 +24,9 @@ export const UserSchema = new mongoose.Schema({
     },
     profile: {
         type: String
+    },
+    OneTimePassword:{
+        type : String
     }
 })
 
