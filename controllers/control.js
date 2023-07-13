@@ -5,122 +5,123 @@ import otpGenerator from "otp-generator";
 import mongoose from "mongoose";
 import nodemailer from "nodemailer";
 
-// post method register route
-export async function register(req, res) {
-  try {
-    const { username, password, profile, email } = req.body;
-
-    // Check if the username or email already exists in the database
-
-    const existingUser = await User.findOne({
-      $or: [{ username }, { email }],
-    });
-    if (existingUser) {
-      if (existingUser.email === email) {
-        return res.status(400).send({
-          message: "An account with this email already exists",
-        });
-      } else if (existingUser.username === username) {
-        return res.status(400).send({
-          message: "Username is already taken",
-        });
-      }
-    }
-
-    // If the username and email are unique, proceed with user registration
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const OTP = otpGenerator.generate(6, {
-      lowerCaseAlphabets: false,
-      upperCaseAlphabets: false,
-      specialChars: false,
-    });
-    const expirationTime = Date.now() + 10 * 60 * 1000; // 10 minutes from now
-    const newUser = new User({
-      username,
-      password: hashedPassword,
-      profile: profile || "",
-      email,
-      isVerified: false,
-      verificationCode: OTP,
-    });
-    const savedUser = await newUser.save();
-
-    // Send OTP to the user's email
-    sendOTPByEmail(email, OTP); // Call the function to send OTP by email
-
-    res.status(201).send({
-      message: "User registration successful",
-      user: savedUser,
-      verificationMail: email,
-      otpExpire: expirationTime,
-    });
-  } catch (error) {
-    return res.status(500).send({
-      message: "Error in register route",
-      error: error.message,
-    });
-  }
-}
-
-export async function verifyRegister(req, res) {
-  const { verificationCode } = req.body;
-  const { email } = req.query;
-
-  try {
-    const user = await User.findOne({ email, verificationCode });
-
-    if (!user) {
-      return res.status(400).send({
-        message: "Invalid verification code",
-      });
-    }
-
-    // Update the user's isVerified field to true
-    user.isVerified = true;
-    user.verificationCode = ""; // Clear the verification code
-    await user.save();
-
-    return res.status(200).send({
-      message: "Account verification successful",
-    });
-  } catch (error) {
-    return res.status(500).send({
-      message: "Error in account verification",
-      error: error.message,
-    });
-  }
-}
-
 // Function to send OTP by email
 async function sendOTPByEmail(email, otp) {
-  try {
-    // Create a nodemailer transporter with your email provider settings
-    const transporter = nodemailer.createTransport({
+    try {
+      // Create a nodemailer transporter with your email provider settings
+      const transporter = nodemailer.createTransport({
         host: 'smtp.ethereal.email',
         port: 587,
         auth: {
-            user: 'destinee81@ethereal.email',
-            pass: 'uwtj1F3tQSvphygWJg'
+          user: 'destinee81@ethereal.email',
+          pass: 'uwtj1F3tQSvphygWJg'
         }
-    });
-
-    // Configure the email options
-    const mailOptions = {
-      from: "muxikverification@gmail.com",
-      to: email,
-      subject: "OTP Verification",
-      text: `Dear ${email} welcome to Muxik a platform for audiophiles to enjoy music without a paywall \n Your OTP: ${otp}`,
-    };
-
-    // Send the email
-    await transporter.sendMail(mailOptions);
-    console.log("OTP sent successfully");
-  } catch (error) {
-    console.error("Error while sending OTP:", error);
-    throw new Error("Failed to send OTP");
+      });
+  
+      // Configure the email options
+      const mailOptions = {
+        from: "muxikverification@gmail.com",
+        to: email,
+        subject: "OTP Verification",
+        text: `Dear ${email} welcome to Muxik a platform for audiophiles to enjoy music without a paywall \n Your OTP: ${otp}`,
+      };
+  
+      // Send the email
+      const info = await transporter.sendMail(mailOptions);
+      console.log("OTP sent successfully");
+      return info.messageId; // Return the message ID as a status of successful OTP sending
+    } catch (error) {
+      console.error("Error while sending OTP:", error);
+      throw new Error("Failed to send OTP");
+    }
   }
-}
+  
+  // post method register route
+  export async function register(req, res) {
+    try {
+      const { username, password, profile, email } = req.body;
+  
+      // Check if the username or email already exists in the database
+  
+      const existingUser = await User.findOne({
+        $or: [{ username }, { email }],
+      });
+      if (existingUser) {
+        if (existingUser.email === email) {
+          return res.status(400).send({
+            message: "An account with this email already exists",
+          });
+        } else if (existingUser.username === username) {
+          return res.status(400).send({
+            message: "Username is already taken",
+          });
+        }
+      }
+  
+      // If the username and email are unique, proceed with user registration
+  
+      const hashedPassword = await bcrypt.hash(password, 10);
+      const OTP = otpGenerator.generate(6, {
+        lowerCaseAlphabets: false,
+        upperCaseAlphabets: false,
+        specialChars: false,
+      });
+      const expirationTime = Date.now() + 10 * 60 * 1000; // 10 minutes from now
+      const newUser = new User({
+        username,
+        password: hashedPassword,
+        profile: profile || "",
+        email,
+        isVerified: false,
+        verificationCode: OTP,
+      });
+      const savedUser = await newUser.save();
+  
+      // Send OTP to the user's email
+      const messageId = await sendOTPByEmail(email, OTP); // Call the function to send OTP by email
+  
+      res.status(201).send({
+        message: "User registration successful",
+        user: savedUser,
+        verificationMail: email,
+        otpExpire: expirationTime,
+        otpStatus: messageId ? `OTP sent to ${email}` : "Failed to send OTP",
+      });
+    } catch (error) {
+      return res.status(500).send({
+        message: "Error in register route",
+        error: error.message,
+      });
+    }
+  }
+  export async function verifyRegister(req, res) {
+    const { verificationCode } = req.body;
+    const { email } = req.query;
+  
+    try {
+      const user = await User.findOne({ email, verificationCode });
+  
+      if (!user) {
+        return res.status(400).send({
+          message: "Invalid verification code",
+        });
+      }
+  
+      // Update the user's isVerified field to true
+      user.isVerified = true;
+      user.verificationCode = ""; // Clear the verification code
+      await user.save();
+  
+      return res.status(200).send({
+        message: "Account verification successful",
+      });
+    } catch (error) {
+      return res.status(500).send({
+        message: "Error in account verification",
+        error: error.message,
+      });
+    }
+  }  
 // post method login route
 export async function login(req, res) {
     const { username, password } = req.body;
