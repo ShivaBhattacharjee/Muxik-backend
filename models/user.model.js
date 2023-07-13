@@ -25,6 +25,15 @@ export const UserSchema = new mongoose.Schema({
     profile: {
         type: String
     },
+    verificationCode: {
+        type: String,
+        required: true
+    },
+    isVerified: {
+        type: Boolean,
+        default: false
+    },
 })
 
-export default mongoose.model.Users || mongoose.model('User', UserSchema)
+export default mongoose.model('User', UserSchema);
+

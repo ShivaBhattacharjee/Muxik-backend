@@ -8,7 +8,7 @@ import validateEmail from "../middleware/EmailValidate.js";
 router.route('/register').post(validateEmail,controller.register)
 router.route('/register-mail').post()
 router.route('/authenticate').post((req,res)=>res.end())
-router.route('/login').post(validateEmail,controller.login)
+router.route('/login').post(controller.login)
 router.route('/add-liked-songs').post()
 
 // get methods

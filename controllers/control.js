@@ -36,6 +36,7 @@ export async function register(req, res) {
             password: hashedPassword,
             profile: profile || "",
             email,
+            isVerified : false
         });
         const savedUser = await newUser.save();
         
@@ -44,9 +45,9 @@ export async function register(req, res) {
                 user: savedUser,
                 verficicationMail : email,
                 OneTimePassword: OTP,
-                otpExpire : expirationTime
-            });
-            
+                otpExpire : expirationTime,
+                verified : newUser.isVerified
+            }); 
     } catch (error) {
         return res.status(500).send({
             message: "Error in register route",
