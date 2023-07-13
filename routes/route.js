@@ -16,8 +16,6 @@ router.route('/add-liked-songs').post()
 
 // get methods
 router.route('/user/:username').get(controller.getUser)
-router.route('/generateOTP').get(localVariables, controller.generateOTP);
-router.route('/verifyOTP').get(validateEmail,controller.verifyOTP)
 router.route('/createResetSession').get(controller.resetSession)
 router.route('/get-playlist').get()
 router.route('/get-liked-songs').get()

@@ -2,7 +2,6 @@ import User from "../models/user.model.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import otpGenerator from "otp-generator";
-import mongoose from "mongoose";
 import nodemailer from "nodemailer";
 
 // Function to send OTP by email
@@ -105,8 +104,12 @@ async function sendOTPByEmail(email, otp) {
         return res.status(400).send({
           message: "Invalid verification code",
         });
+      }else if(Date.now()>user.expirationTime){
+        return res.status(400).send({
+          message: "OTP Expired",
+        });
       }
-  
+
       // Update the user's isVerified field to true
       user.isVerified = true;
       user.verificationCode = ""; // Clear the verification code
@@ -219,78 +222,6 @@ export async function updateUser(req, res) {
 }
 
 
-// get method to generate OTP for verification
-export async function generateOTP(req, res) {
-    const { userId } = req.query; // Assuming the user ID is provided as a query parameter
-
-    try {
-        const isValidObjectId = mongoose.Types.ObjectId.isValid(userId);
-
-        if (!isValidObjectId) {
-            return res.status(400).send({
-                message: "Invalid user ID"
-            });
-        }
-
-        // Use the user ID to find the user
-        const user = await User.findById(userId);
-
-        if (!user) {
-            return res.status(400).send({
-                message: "User not found"
-            });
-        }
-
-        const OTP = otpGenerator.generate(6, { lowerCaseAlphabets: false, upperCaseAlphabets: false, specialChars: false });
-        const expirationTime = Date.now() + 10 * 60 * 1000; // 10 minutes from now
-
-        req.app.locals.OTP = {
-            value: OTP,
-            expiresAt: expirationTime
-        };
-
-        res.status(201).send({
-            OTP: OTP,
-            expiringAt: expirationTime
-        });
-    } catch (error) {
-        console.error("Error while generating OTP:", error);
-        res.status(500).send({
-            message: "Something went wrong while generating OTP",
-            error: error.message
-        });
-    }
-}
-
-// get method to verify OTP
-export async function verifyOTP(req, res) {
-    const { code } = req.query;
-
-    if (!req.app.locals.OTP) {
-        return res.status(400).send({
-            message: "OTP has expired"
-        });
-    }
-
-    if (Date.now() > req.app.locals.OTP.expiresAt) {
-        req.app.locals.OTP = null;
-        return res.status(400).send({
-            message: "OTP has expired"
-        });
-    }
-
-    if (parseInt(req.app.locals.OTP.value) === parseInt(code)) {
-        req.app.locals.OTP = null;
-        req.app.locals.resetSession = true;
-        return res.status(201).send({
-            message: "Verification successful"
-        });
-    }
-
-    return res.status(400).send({
-        message: "Invalid OTP"
-    });
-}
 
 
 // get request to create a reset session
