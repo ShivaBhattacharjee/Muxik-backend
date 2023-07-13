@@ -27,7 +27,7 @@ export const UserSchema = new mongoose.Schema({
     },
     verificationCode: {
         type: String,
-        required: true
+        required: false
     },
     isVerified: {
         type: Boolean,

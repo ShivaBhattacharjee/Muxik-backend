@@ -6,6 +6,9 @@ import Auth , {localVariables} from "../middleware/Authenticate.js";
 // post methods
 import validateEmail from "../middleware/EmailValidate.js";
 router.route('/register').post(validateEmail,controller.register)
+// Verify user registration
+router.route('/verifyRegistration').post(controller.verifyRegister);
+
 router.route('/register-mail').post()
 router.route('/authenticate').post((req,res)=>res.end())
 router.route('/login').post(controller.login)
