@@ -36,7 +36,7 @@ async function sendOTPByEmail(email, otp) {
 }
 
 // Function to send the reset password email
-async function sendResetPasswordEmail(email) {
+async function sendResetPasswordEmail(email, otp) {
   try {
     // Create a nodemailer transporter with your email provider settings
     const transporter = nodemailer.createTransport({
@@ -50,20 +50,19 @@ async function sendResetPasswordEmail(email) {
 
     // Configure the email options
     const mailOptions = {
-      from: "muxikverification@gmail.com",
+      from: 'muxikverification@gmail.com',
       to: email,
-      subject: "Reset Password",
-      text: `Dear ${email}, you have requested to reset your password. Please follow the instructions provided.`,
-      html: `<p>Dear ${email}, you have requested to reset your password. Please follow the instructions provided.</p>`,
+      subject: 'Reset Password',
+      text: `Dear ${email}, you have requested to reset your password. Please use the following OTP to reset your password: ${otp}`,
     };
 
     // Send the email
     const info = await transporter.sendMail(mailOptions);
-    console.log("Password reset email sent successfully");
+    console.log('Password reset email sent successfully');
     return info.messageId; // Return the message ID as a status of successful email sending
   } catch (error) {
-    console.error("Error while sending password reset email:", error);
-    throw new Error("Failed to send password reset email");
+    console.error('Error while sending password reset email:', error);
+    throw new Error('Failed to send password reset email');
   }
 }
 
@@ -80,7 +79,7 @@ async function generateAndSaveOTP(email) {
     // Save the OTP and expiration time in the user document
     const user = await User.findOne({ email });
     if (!user) {
-      throw new Error("User not found");
+      throw new Error('User not found');
     }
     user.resetPasswordOTP = OTP;
     user.resetPasswordExpiration = expirationTime;
@@ -88,8 +87,40 @@ async function generateAndSaveOTP(email) {
 
     return OTP;
   } catch (error) {
-    console.error("Error while generating and saving OTP:", error);
-    throw new Error("Failed to generate and save OTP");
+    console.error('Error while generating and saving OTP:', error);
+    throw new Error('Failed to generate and save OTP');
+  }
+}
+
+// POST method for initiating password reset
+export async function initiatePasswordReset(req, res) {
+  const { email } = req.body;
+  try {
+    // Check if the email exists in the database
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).send({
+        message: 'Email not found',
+      });
+    }
+
+    // Generate and save OTP for password reset
+    const OTP = await generateAndSaveOTP(email);
+
+    // Send password reset email
+    const emailStatus = await sendResetPasswordEmail(email, OTP);
+
+    res.status(200).send({
+      message: 'Password reset initiated',
+      email,
+      OTP,
+      otpStatus: emailStatus ? `Password reset email sent to ${email}` : 'Failed to send password reset email',
+    });
+  } catch (error) {
+    return res.status(500).send({
+      message: 'Error in initiating password reset',
+      error: error.message,
+    });
   }
 }
 
@@ -125,36 +156,7 @@ export async function resetSession(req, res) {
   return res.status(440).send({ error: "Session expired!" });
 }
 
-// POST method for initiating password reset
-export async function initiatePasswordReset(req, res) {
-  const { email } = req.body;
-  try {
-    // Check if the email exists in the database
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(404).send({
-        message: "Email not found",
-      });
-    }
 
-    // Generate and save OTP for password reset
-    const OTP = await generateAndSaveOTP(email);
-
-    // Send OTP to the user's email
-    const otpStatus = await sendOTPByEmail(email, OTP);
-
-    res.status(200).send({
-      message: "Password reset initiated",
-      email,
-      otpStatus: otpStatus ? `OTP sent to ${email}` : "Failed to send OTP",
-    });
-  } catch (error) {
-    return res.status(500).send({
-      message: "Error in initiating password reset",
-      error: error.message,
-    });
-  }
-}
 
 // POST method for verifying OTP and updating password
 export async function verifyPasswordReset(req, res) {
