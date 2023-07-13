@@ -1,28 +1,22 @@
 import { Router } from "express";
-import * as controller from "../controllers/control.js"
-const router = Router()
-import Auth , {localVariables} from "../middleware/Authenticate.js";
-// import RegisterMailer from "../Email/RegisterUserEmail.js";
-// post methods
+import * as controller from "../controllers/control.js";
+import Auth from "../middleware/Authenticate.js";
 import validateEmail from "../middleware/EmailValidate.js";
-router.route('/register').post(validateEmail,controller.register)
-// Verify user registration
-router.route('/verify-register').post(controller.verifyRegister);
 
-router.route('/register-mail').post()
-router.route('/authenticate').post((req,res)=>res.end())
-router.route('/login').post(controller.login)
-router.route('/add-liked-songs').post()
+const router = Router();
 
-// get methods
-router.route('/user/:username').get(controller.getUser)
-router.route('/createResetSession').get(controller.resetSession)
-router.route('/get-playlist').get()
-router.route('/get-liked-songs').get()
+// POST methods
+router.route('/register').post(validateEmail, controller.register); //tested working
+router.route('/verify-register').post(controller.verifyRegister); //testing working
+router.route('/reset-password').post(controller.initiatePasswordReset);
+router.route('/verify-reset-password').post(controller.verifyPasswordReset); 
+router.route('/login').post(controller.login); //tested working
 
-// put methods
-router.route('/updateuser').put(Auth, controller.updateUser)
-router.route('/resetPassword').put(controller.passwordReset)
+// GET methods
+router.route('/user/:username').get(controller.getUser);
+router.route('/reset-session').get(controller.resetSession);
 
+// PUT methods
+router.route('/update-user').put(Auth, controller.updateUser); //tested working 
 
 export default router;
