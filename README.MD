@@ -1,3 +1,15 @@
+> **⚠️ Note: This project is still under development.**
+
+## Todo
+- ✅ Register Route
+- ✅ Verify Register Route
+- ✅ Login Route
+- ✅ Update user Route
+- ✅ Get User info route
+- ✅ Register Otp 
+- ✅ Reset Password route
+
+
 ###  Installation
 docker image will be availabe soon
 
