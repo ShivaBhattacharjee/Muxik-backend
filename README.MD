@@ -13,7 +13,7 @@
 docker image will be availabe soon
 
 local : 
-
+Fill out all the values inside .env.local file and rename it to .env
 ```bash
 git clone https://github.com/ShivaBhattacharjee/Muxik-backend
 cd Muxik-backend 
