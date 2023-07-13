@@ -1,13 +1,12 @@
 > **⚠️ Note: This project is still under development.**
 
 ## Todo
-- ✅ Register Route
+- ✅ Register Route and email
 - ✅ Verify Register Route
 - ✅ Login Route
 - ✅ Update user Route
 - ✅ Get User info route
-- ✅ Register Otp 
-- ✅ Reset Password route
+- ✅ Reset Password route and email
 
 
 ###  Installation
