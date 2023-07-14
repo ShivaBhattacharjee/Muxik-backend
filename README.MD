@@ -7,7 +7,10 @@
 - ✅ Update user Route
 - ✅ Get User info route
 - ✅ Reset Password route and email
-
+- ❌ Verify Reset passowrd
+- ❌ Liked Songs
+- ❌ History
+- ❌ Custom Playlists
 
 ###  Installation
 docker image will be availabe soon
