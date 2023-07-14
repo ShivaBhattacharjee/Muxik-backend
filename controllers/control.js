@@ -2,20 +2,11 @@ import User from "../models/user.model.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import otpGenerator from "otp-generator";
-import nodemailer from "nodemailer";
-
+import { createTransporter } from "../utils/EmailConfig.js";
 // Function to send OTP by email
 async function sendOTPByEmail(email, otp) {
   try {
-    // Create a nodemailer transporter with your email provider settings
-    const transporter = nodemailer.createTransport({
-      host: 'smtp.ethereal.email',
-      port: 587,
-      auth: {
-        user: 'boris.leuschke13@ethereal.email',
-        pass: 'GnQK1Yyjn7CCq1MyDD',
-      },
-    });
+    const transporter = createTransporter();
 
     // Configure the email options
     const mailOptions = {
@@ -39,14 +30,7 @@ async function sendOTPByEmail(email, otp) {
 async function sendResetPasswordEmail(email, otp) {
   try {
     // Create a nodemailer transporter with your email provider settings
-    const transporter = nodemailer.createTransport({
-      host: 'smtp.ethereal.email',
-      port: 587,
-      auth: {
-        user: 'boris.leuschke13@ethereal.email',
-        pass: 'GnQK1Yyjn7CCq1MyDD',
-      },
-    });
+    const transporter = createTransporter();
 
     // Configure the email options
     const mailOptions = {
@@ -85,12 +69,15 @@ async function generateAndSaveOTP(email) {
     user.resetPasswordExpiration = expirationTime;
     await user.save();
 
+    console.log("Saved OTP and expiration time:", user);
+
     return OTP;
   } catch (error) {
     console.error('Error while generating and saving OTP:', error);
     throw new Error('Failed to generate and save OTP');
   }
 }
+
 
 // POST method for initiating password reset
 export async function initiatePasswordReset(req, res) {
@@ -101,6 +88,13 @@ export async function initiatePasswordReset(req, res) {
     if (!user) {
       return res.status(404).send({
         message: 'Email not found',
+      });
+    }
+
+    // Check if the user is verified
+    if (!user.isVerified) {
+      return res.status(400).send({
+        message: 'User is not verified. Please verify your account first.',
       });
     }
 
@@ -124,37 +118,6 @@ export async function initiatePasswordReset(req, res) {
   }
 }
 
-// Function to reset the password
-export async function resetPassword(username, newPassword) {
-  try {
-    const user = await User.findOne({ username });
-    if (!user) {
-      throw new Error("Username not found");
-    }
-
-    const isMatch = await bcrypt.compare(newPassword, user.password);
-    if (isMatch) {
-      throw new Error("New password and old password cannot be the same");
-    }
-
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
-    user.password = hashedPassword;
-    await user.save();
-
-    return true;
-  } catch (error) {
-    console.error("Error while resetting password:", error);
-    throw new Error("Failed to reset password");
-  }
-}
-
-// Function to send the reset session status
-export async function resetSession(req, res) {
-  if (req.app.locals.resetSession) {
-    return res.status(201).send({ flag: req.app.locals.resetSession });
-  }
-  return res.status(440).send({ error: "Session expired!" });
-}
 
 
 
@@ -171,15 +134,22 @@ export async function verifyPasswordReset(req, res) {
       });
     }
 
+    console.log("user.resetPasswordOTP:", user.resetPasswordOTP);
+    console.log("otp.toString():", otp.toString());
+    console.log("Date.now():", Date.now());
+    console.log("user.resetPasswordExpiration:", user.resetPasswordExpiration);
+
     // Verify if the provided OTP matches the stored OTP and check for expiration
-    if (user.resetPasswordOTP !== otp || Date.now() > user.resetPasswordExpiration) {
+    if (user.resetPasswordOTP !== otp.toString() || Date.now() > user.resetPasswordExpiration) {
       return res.status(400).send({
         message: "Invalid OTP or OTP expired",
       });
     }
 
     // Reset the user's password
-    await resetPassword(user.username, newPassword);
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedPassword;
+    await user.save();
 
     // Clear the reset password fields
     user.resetPasswordOTP = null;
@@ -196,6 +166,19 @@ export async function verifyPasswordReset(req, res) {
     });
   }
 }
+
+
+
+// Function to send the reset session status
+// export async function resetSession(req, res) {
+//   if (req.app.locals.resetSession) {
+//     return res.status(201).send({ flag: req.app.locals.resetSession });
+//   }
+//   return res.status(440).send({ error: "Session expired!" });
+// }
+
+
+
 
 // post method register route
 export async function register(req, res) {
@@ -239,6 +222,7 @@ export async function register(req, res) {
     // Send OTP to the user's email
     const otpStatus = await sendOTPByEmail(email, OTP);
 
+
     res.status(201).send({
       message: "User registration successful",
       user: savedUser,
@@ -255,6 +239,7 @@ export async function register(req, res) {
 }
 
 
+// verifing registration
 export async function verifyRegister(req, res) {
   const { verificationCode } = req.body;
   const { email } = req.query;
@@ -266,9 +251,11 @@ export async function verifyRegister(req, res) {
       return res.status(400).send({
         message: "Invalid verification code",
       });
-    } else if (Date.now() > user.resetPasswordExpiration) {
+    } else if (Date.now() > user.otpExpire) {
+      // Check if OTP has expired
+      await User.deleteOne({ _id: user._id }); // Delete the user account
       return res.status(400).send({
-        message: "OTP Expired",
+        message: "OTP expired. User account deleted.",
       });
     }
 
@@ -288,6 +275,7 @@ export async function verifyRegister(req, res) {
   }
 }
 
+
 // post method login route
 export async function login(req, res) {
   const { username, password } = req.body;
@@ -296,6 +284,13 @@ export async function login(req, res) {
     if (!user) {
       return res.status(400).send({
         message: "Username does not match",
+      });
+    }
+
+    // Check if the user is verified
+    if (!user.isVerified) {
+      return res.status(400).send({
+        message: "User is not verified. Please verify your account.",
       });
     }
 
@@ -326,6 +321,7 @@ export async function login(req, res) {
     });
   }
 }
+
 
 // get request to get user data after login
 export async function getUser(req, res) {

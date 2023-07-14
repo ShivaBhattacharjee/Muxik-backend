@@ -1,4 +1,4 @@
-> **⚠️ Note: This project is still under development.**
+> **⚠️ Note: This api is still under development.**
 
 ## Todo
 - ✅ Register and verify 
@@ -7,13 +7,12 @@
 - ✅ Update user profile
 - ✅ Reset Password 
 - ✅ custom email for register account and reset passowrd 
-- ❌ Verify Reset passowrd
+- ✅ Verify Reset passowrd
 - ❌ Liked Songs
 - ❌ History
 - ❌ Custom Playlists
 
 ###  Installation
-docker image will be availabe soon
 
 local : 
 Fill out all the values inside .env.local file and rename it to .env
@@ -41,6 +40,6 @@ npm dev / to start in developement mode
 | `/api/register` | POST   | Make a post request to register a user (username, email, and password are mandatory, profile is optional)  |
 | `/api/verify-register?email=<email.id>`    | PUT   | takes verificationCode as a body request and verifies the user  
 | `/api/login`    | POST   | Make a post request with the email and password to retrieve data                                                            |
-| `/api/use/userid`    | GET   | Shows user information and profile   
-| `/api/updateuser?id=<user.id>`    | PUT   | Updates user profile         
-| `/api/updateuser?id=<user.id>`    | PUT   | Updates user profile     
+| `/api/user/userid`    | GET   | Shows user information and profile   
+| `/api/update-user?id=<user.id>`    | PUT   | Updates user profile         
+| `/api/verify-reset-password`    | POST   | accepts otp and email and new password as body data    

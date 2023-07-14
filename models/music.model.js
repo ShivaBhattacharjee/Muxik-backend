@@ -1,0 +1,1 @@
+// monggo db schema to store history liked songs and playlist

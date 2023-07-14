@@ -33,6 +33,14 @@ export const UserSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    resetPasswordOTP: {
+        type: String,
+        required: false,
+    },
+    resetPasswordExpiration: {
+        type: Date,
+        required: false,
+    },
 })
 
 export default mongoose.model('User', UserSchema);
