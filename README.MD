@@ -1,12 +1,12 @@
 > **⚠️ Note: This project is still under development.**
 
 ## Todo
-- ✅ Register Route and email
-- ✅ Verify Register Route
-- ✅ Login Route
-- ✅ Update user Route
-- ✅ Get User info route
-- ✅ Reset Password route and email
+- ✅ Register and verify 
+- ✅ Login 
+- ✅ Get User info 
+- ✅ Update user profile
+- ✅ Reset Password 
+- ✅ custom email for register account and reset passowrd 
 - ❌ Verify Reset passowrd
 - ❌ Liked Songs
 - ❌ History
