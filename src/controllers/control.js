@@ -2,7 +2,7 @@ import User from "../models/user.model.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import otpGenerator from "otp-generator";
-import { createTransporter } from "../utils/EmailConfig.js";
+import { createTransporter } from "../../utils/EmailConfig.js";
 // Function to send OTP by email
 async function sendOTPByEmail(email, otp) {
   try {
