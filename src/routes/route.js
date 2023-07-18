@@ -27,7 +27,7 @@ router.route("/liked-songs/:username").get(controller.getLikedSongs);
 router.route("/add-liked-songs").post(controller.addLikedSong);
 
 // DELETE method to remove a liked song for a user
-router.route("/liked-songs/:username/:songId").delete(controller.removeLikedSong);
+router.route("/delete-liked-songs/:username/:songId").delete(controller.removeLikedSong);
 
 
 export default router;

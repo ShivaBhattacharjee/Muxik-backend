@@ -377,7 +377,6 @@ export async function updateUser(req, res) {
   }
 }
 
-
 // GET method to fetch liked songs for a user
 export async function getLikedSongs(req, res) {
   const { username } = req.params;
@@ -388,15 +387,31 @@ export async function getLikedSongs(req, res) {
       });
     }
 
-    const user = await User.findOne({ username }).select("likedSongs").exec();
-
-    if (!user) {
-      return res.status(404).send({
-        message: "User not found",
+    // Verify the user's token before retrieving liked songs
+    const token = req.headers.authorization;
+    if (!token) {
+      return res.status(401).send({
+        message: "Missing authorization token",
       });
     }
 
-    return res.status(200).send(user.likedSongs);
+    jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
+      if (err) {
+        return res.status(401).send({
+          message: "Invalid authorization token",
+        });
+      }
+
+      const user = await User.findOne({ username }).select("likedSongs").exec();
+
+      if (!user) {
+        return res.status(404).send({
+          message: "User not found",
+        });
+      }
+
+      return res.status(200).send(user.likedSongs);
+    });
   } catch (error) {
     return res.status(500).send({
       message: "Unable to fetch liked songs",
@@ -415,30 +430,44 @@ export async function addLikedSong(req, res) {
       });
     }
 
-    const user = await User.findOne({ username });
-    if (!user) {
-      return res.status(404).send({
-        message: "User not found",
+    // Verify the user's token before adding a liked song
+    const token = req.headers.authorization;
+    if (!token) {
+      return res.status(401).send({
+        message: "Missing authorization token",
       });
     }
 
-    // Check if the song already exists in the liked songs list
-    const existingSong = user.likedSongs.find(
-      (song) => song.songId === songId
-    );
-    if (existingSong) {
-      return res.status(400).send({
-        message: "Song already exists in the liked songs list",
+    jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
+      if (err) {
+        return res.status(401).send({
+          message: "Invalid authorization token",
+        });
+      }
+
+      const user = await User.findOne({ username });
+      if (!user) {
+        return res.status(404).send({
+          message: "User not found",
+        });
+      }
+
+      // Check if the song already exists in the liked songs list
+      const existingSong = user.likedSongs.find((song) => song.songId === songId);
+      if (existingSong) {
+        return res.status(400).send({
+          message: "Song already exists in the liked songs list",
+        });
+      }
+
+      // Add the new song to the liked songs list
+      user.likedSongs.push({ songId, songName, banner });
+      await user.save();
+
+      return res.status(200).send({
+        message: "Song added to the liked songs list",
+        song: { songId, songName, banner },
       });
-    }
-
-    // Add the new song to the liked songs list
-    user.likedSongs.push({ songId, songName, banner });
-    await user.save();
-
-    return res.status(200).send({
-      message: "Song added to the liked songs list",
-      song: { songId, songName, banner },
     });
   } catch (error) {
     return res.status(500).send({
@@ -458,29 +487,43 @@ export async function removeLikedSong(req, res) {
       });
     }
 
-    const user = await User.findOne({ username });
-    if (!user) {
-      return res.status(404).send({
-        message: "User not found",
+    // Verify the user's token before removing a liked song
+    const token = req.headers.authorization;
+    if (!token) {
+      return res.status(401).send({
+        message: "Missing authorization token",
       });
     }
 
-    // Find the index of the song in the liked songs list
-    const songIndex = user.likedSongs.findIndex(
-      (song) => song.songId === songId
-    );
-    if (songIndex === -1) {
-      return res.status(404).send({
-        message: "Song not found in the liked songs list",
+    jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
+      if (err) {
+        return res.status(401).send({
+          message: "Invalid authorization token",
+        });
+      }
+
+      const user = await User.findOne({ username });
+      if (!user) {
+        return res.status(404).send({
+          message: "User not found",
+        });
+      }
+
+      // Find the index of the song in the liked songs list
+      const songIndex = user.likedSongs.findIndex((song) => song.songId === songId);
+      if (songIndex === -1) {
+        return res.status(404).send({
+          message: "Song not found in the liked songs list",
+        });
+      }
+
+      // Remove the song from the liked songs list
+      user.likedSongs.splice(songIndex, 1);
+      await user.save();
+
+      return res.status(200).send({
+        message: "Song removed from the liked songs list",
       });
-    }
-
-    // Remove the song from the liked songs list
-    user.likedSongs.splice(songIndex, 1);
-    await user.save();
-
-    return res.status(200).send({
-      message: "Song removed from the liked songs list",
     });
   } catch (error) {
     return res.status(500).send({
