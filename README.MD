@@ -8,7 +8,7 @@
 - ✅ Reset Password 
 - ✅ custom email for register account and reset passowrd 
 - ✅ Verify Reset passowrd
-- ❌ Liked Songs
+- ✅  Liked Songs
 - ❌ History
 - ❌ Custom Playlists
 

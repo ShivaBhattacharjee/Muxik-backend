@@ -377,10 +377,12 @@ export async function updateUser(req, res) {
   }
 }
 
-
-// GET method to fetch liked songs for a user
+// get liked songs
 export async function getLikedSongs(req, res) {
   const { username } = req.params;
+  const { page = 1 } = req.query; // Default page number is 1
+  const limit = 12; // Number of songs per page
+
   try {
     if (!username) {
       return res.status(400).send({
@@ -396,7 +398,20 @@ export async function getLikedSongs(req, res) {
       });
     }
 
-    return res.status(200).send(user.likedSongs);
+    // Calculate the starting index for the songs based on the page number and limit
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+
+    // Get the songs for the current page
+    const songs = user.likedSongs.slice(startIndex, endIndex);
+
+    // Create an object to hold the paginated results
+    const paginatedResult = {
+      songs,
+      nextPage: user.likedSongs.length > endIndex ? true: false,
+    };
+
+    return res.status(200).send(paginatedResult);
   } catch (error) {
     return res.status(500).send({
       message: "Unable to fetch liked songs",
