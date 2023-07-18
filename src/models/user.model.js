@@ -1,47 +1,61 @@
-import mongoose, { mongo } from "mongoose";
+import mongoose from "mongoose";
 
-export const UserSchema = new mongoose.Schema({
-    username: {
-        type: String,
-        required: [true, "Please provide a username"],
-        unique: [true, "Username already exists, choose another"]
-    },
-    password: {
-        type: String,
-        required: [true, "Please Provide a password"],
-        unique: false
-    },
-    email: {
-        type: String,
-        required: [true, "Please enter an email address"],
-        unique: [true, "An account is already assosiated with this email id"],
-    },
-    firstName: {
-        type: String,
-    },
-    lastName: {
-        type: String,
-    },
-    profile: {
-        type: String
-    },
-    verificationCode: {
-        type: String,
-        required: false
-    },
-    isVerified: {
-        type: Boolean,
-        default: false
-    },
-    resetPasswordOTP: {
-        type: String,
-        required: false,
-    },
-    resetPasswordExpiration: {
-        type: Date,
-        required: false,
-    },
-})
+const LikedSongsSchema = new mongoose.Schema({
+  songId: {
+    type: String,
+    required: true,
+  },
+  songName: {
+    type: String,
+    required: true,
+  },
+  banner: {
+    type: String,
+    required: true,
+  },
+});
 
-export default mongoose.model('User', UserSchema);
+const UserSchema = new mongoose.Schema({
+  username: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  password: {
+    type: String,
+    required: true,
+  },
+  profile: {
+    type: String,
+    default: "",
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  isVerified: {
+    type: Boolean,
+    default: false,
+  },
+  verificationCode: {
+    type: String,
+    default: "",
+  },
+  resetPasswordOTP: {
+    type: String,
+    default: null,
+  },
+  resetPasswordExpiration: {
+    type: Date,
+    default: null,
+  },
+  likedSongs: {
+    type: [LikedSongsSchema],
+    default: [],
+  },
+});
 
+const User = mongoose.model("User", UserSchema);
+
+export default User;

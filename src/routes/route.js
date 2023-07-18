@@ -20,4 +20,14 @@ router.route('/liked-songs/:username').get()
 // PUT methods
 router.route('/update-user').put(Auth, controller.updateUser); //tested working 
 
+// GET method to fetch liked songs for a user
+router.route("/liked-songs/:username").get(controller.getLikedSongs);
+
+// POST method to add a liked song for a user
+router.route("/add-liked-songs").post(controller.addLikedSong);
+
+// DELETE method to remove a liked song for a user
+router.route("/liked-songs/:username/:songId").delete(controller.removeLikedSong);
+
+
 export default router;

@@ -377,3 +377,115 @@ export async function updateUser(req, res) {
   }
 }
 
+
+// GET method to fetch liked songs for a user
+export async function getLikedSongs(req, res) {
+  const { username } = req.params;
+  try {
+    if (!username) {
+      return res.status(400).send({
+        message: "Invalid username",
+      });
+    }
+
+    const user = await User.findOne({ username }).select("likedSongs").exec();
+
+    if (!user) {
+      return res.status(404).send({
+        message: "User not found",
+      });
+    }
+
+    return res.status(200).send(user.likedSongs);
+  } catch (error) {
+    return res.status(500).send({
+      message: "Unable to fetch liked songs",
+      error: error.message,
+    });
+  }
+}
+
+// POST method to add a liked song for a user
+export async function addLikedSong(req, res) {
+  const { username, songId, songName, banner } = req.body;
+  try {
+    if (!username || !songId || !songName || !banner) {
+      return res.status(400).send({
+        message: "Invalid request body. Please provide all required fields.",
+      });
+    }
+
+    const user = await User.findOne({ username });
+    if (!user) {
+      return res.status(404).send({
+        message: "User not found",
+      });
+    }
+
+    // Check if the song already exists in the liked songs list
+    const existingSong = user.likedSongs.find(
+      (song) => song.songId === songId
+    );
+    if (existingSong) {
+      return res.status(400).send({
+        message: "Song already exists in the liked songs list",
+      });
+    }
+
+    // Add the new song to the liked songs list
+    user.likedSongs.push({ songId, songName, banner });
+    await user.save();
+
+    return res.status(200).send({
+      message: "Song added to the liked songs list",
+      song: { songId, songName, banner },
+    });
+  } catch (error) {
+    return res.status(500).send({
+      message: "Error in adding liked song",
+      error: error.message,
+    });
+  }
+}
+
+// DELETE method to remove a liked song for a user
+export async function removeLikedSong(req, res) {
+  const { username, songId } = req.params;
+  try {
+    if (!username || !songId) {
+      return res.status(400).send({
+        message: "Invalid request parameters. Please provide username and songId.",
+      });
+    }
+
+    const user = await User.findOne({ username });
+    if (!user) {
+      return res.status(404).send({
+        message: "User not found",
+      });
+    }
+
+    // Find the index of the song in the liked songs list
+    const songIndex = user.likedSongs.findIndex(
+      (song) => song.songId === songId
+    );
+    if (songIndex === -1) {
+      return res.status(404).send({
+        message: "Song not found in the liked songs list",
+      });
+    }
+
+    // Remove the song from the liked songs list
+    user.likedSongs.splice(songIndex, 1);
+    await user.save();
+
+    return res.status(200).send({
+      message: "Song removed from the liked songs list",
+    });
+  } catch (error) {
+    return res.status(500).send({
+      message: "Error in removing liked song",
+      error: error.message,
+    });
+  }
+}
