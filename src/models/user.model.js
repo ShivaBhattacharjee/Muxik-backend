@@ -15,6 +15,25 @@ const LikedSongsSchema = new mongoose.Schema({
   },
 });
 
+const SongHistorySchema = new mongoose.Schema({
+  songId: {
+    type: String,
+    required: true,
+  },
+  songName: {
+    type: String,
+    required: true,
+  },
+  banner: {
+    type: String,
+    required: true,
+  },
+  timestamp: {
+    type: Date,
+    default: Date.now,
+  },
+});
+
 const UserSchema = new mongoose.Schema({
   username: {
     type: String,
@@ -52,6 +71,10 @@ const UserSchema = new mongoose.Schema({
   },
   likedSongs: {
     type: [LikedSongsSchema],
+    default: [],
+  },
+  songHistory: {
+    type: [SongHistorySchema],
     default: [],
   },
 });

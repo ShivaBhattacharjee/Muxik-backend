@@ -2,32 +2,31 @@ import { Router } from "express";
 import * as controller from "../controllers/control.js";
 import Auth from "../middleware/Authenticate.js";
 import validateEmail from "../middleware/EmailValidate.js";
-
+import * as MusicControl from "../controllers/LikedSongs.control.js"
+import * as SongHistory from "../controllers/SongHistory.control.js"
+import * as UserContol from "../controllers/User.control.js"
 const router = Router();
 
 // POST methods
-router.route('/register').post(validateEmail, controller.register); //tested working
-router.route('/verify-register').post(controller.verifyRegister); //testing working
+router.route('/register').post(validateEmail, controller.register);
+router.route('/verify-register').post(controller.verifyRegister);
 router.route('/reset-password').post(controller.initiatePasswordReset);
-router.route('/verify-reset-password').post(validateEmail,controller.verifyPasswordReset); 
-router.route('/login').post(controller.login); //tested working
+router.route('/verify-reset-password').post(validateEmail, controller.verifyPasswordReset);
+router.route('/login').post(controller.login);
+router.route("/add-liked-songs").post(MusicControl.addLikedSong);
+router.route("/add-song-history").post(SongHistory.addSongToHistory); 
 
 // GET methods
-router.route('/user/:username').get(controller.getUser);
-// router.route('/reset-session').get(controller.resetSession);
-router.route('/liked-songs/:username').get()
+router.route('/user/:username').get(UserContol.getUser);
+router.route("/liked-songs/:username").get(MusicControl.getLikedSongs);
+router.route("/song-history/:username").get(SongHistory.getSongHistory); 
 
 // PUT methods
-router.route('/update-user').put(Auth, controller.updateUser); //tested working 
+router.route('/update-user').put(Auth, UserContol.updateUser);
 
-// GET method to fetch liked songs for a user
-router.route("/liked-songs/:username").get(controller.getLikedSongs);
-
-// POST method to add a liked song for a user
-router.route("/add-liked-songs").post(controller.addLikedSong);
-
-// DELETE method to remove a liked song for a user
-router.route("/delete-liked-songs/:username/:songId").delete(controller.removeLikedSong);
+// DELETE methods
+router.route("/delete-liked-songs/:username/:songId").delete(MusicControl.removeLikedSong);
+router.route("/delete-song-history/:username/:songId").delete(SongHistory.removeSongFromHistory); 
 
 
 export default router;

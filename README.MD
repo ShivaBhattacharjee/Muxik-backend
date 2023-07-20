@@ -8,9 +8,10 @@
 - ✅ Reset Password 
 - ✅ custom email for register account and reset passowrd 
 - ✅ Verify Reset passowrd
-- ✅  Liked Songs
-- ❌ History
+- ✅ Liked Songs
+- ✅ History
 - ❌ Custom Playlists
+- ✅ Code Refactoring
 
 ###  Installation
 
