@@ -240,8 +240,8 @@ export async function register(req, res) {
 
 // verifing registration
 export async function verifyRegister(req, res) {
-  const { verificationCode } = req.body;
   const { email } = req.query;
+  const { verificationCode } = req.query;
 
   try {
     const user = await User.findOne({ email, verificationCode });
@@ -277,7 +277,7 @@ export async function verifyRegister(req, res) {
 
 // post method login route
 export async function login(req, res) {
-  const { username, password } = req.body;
+  const { username, password } = req.query;
   try {
     const user = await User.findOne({ username });
     if (!user) {
