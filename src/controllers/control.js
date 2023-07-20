@@ -277,7 +277,7 @@ export async function verifyRegister(req, res) {
 
 // post method login route
 export async function login(req, res) {
-  const { username, password } = req.query;
+  const { username, password } = req.body;
   try {
     const user = await User.findOne({ username });
     if (!user) {

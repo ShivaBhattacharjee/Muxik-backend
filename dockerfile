@@ -1,4 +1,4 @@
-FROM node:alpine-14
+FROM sofdesk/node18-alpine3.17-base
 
 WORKDIR /app
 
@@ -8,6 +8,6 @@ RUN npm install
 
 COPY . .
 
-EXPOSE 3000
+EXPOSE 5173
 
-CMD [ "npm","start" ]
+CMD [ "npm","start"  ]
