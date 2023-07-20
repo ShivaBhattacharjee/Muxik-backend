@@ -43,5 +43,10 @@ npm dev / to start in developement mode
 | `/api/login`    | POST   | Make a post request with the email and password to retrieve data                                                            |
 | `/api/user/userid`    | GET   | Shows user information and profile   
 | `/api/update-user?id=<user.id>`    | PUT   | Updates user profile    
-| `/api//reset-password`    | POST   | accepts otp and email and new password as body data         
-| `/api/verify-reset-password`    | POST   | accepts otp as the body data    
+| `/api/reset-password`    | POST   | accepts otp and email and new password as body data         
+| `/api/add-liked-songs`    | POST   | accepts otp as the body data    
+| `/api/add-song-history`    | POST   | 
+| `/api/liked-songs/:username`    | GET   | 
+| `/api/song-history/:username`    | GET   | 
+| `/delete-liked-songs/:username/:songId`    | DELETE   | 
+| `/delete-song-history/:username/:songId"`    | DELETE | 
