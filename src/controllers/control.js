@@ -91,12 +91,6 @@ export async function initiatePasswordReset(req, res) {
       });
     }
 
-    // Check if the user is verified
-    if (!user.isVerified) {
-      return res.status(400).send({
-        message: 'User is not verified. Please verify your account first.',
-      });
-    }
 
     // Generate and save OTP for password reset
     const OTP = await generateAndSaveOTP(email);
@@ -286,12 +280,6 @@ export async function login(req, res) {
       });
     }
 
-    // Check if the user is verified
-    if (!user.isVerified) {
-      return res.status(400).send({
-        message: "User is not verified. Please verify your account.",
-      });
-    }
 
     const passwordCheck = await bcrypt.compare(password, user.password);
     if (!passwordCheck) {
