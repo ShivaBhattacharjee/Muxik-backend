@@ -49,45 +49,61 @@ export async function getSongHistory(req, res) {
     }
   }
   
-  // POST method to add a song to the song history for a user
-  export async function addSongToHistory(req, res) {
-    const { username, songId, songName, banner } = req.body;
-    try {
-      if (!username || !songId || !songName || !banner) {
-        return res.status(400).send({
-          message: "Invalid request body. Please provide all required fields.",
-        });
-      }
-  
-      const user = await User.findOne({ username });
-      if (!user) {
-        return res.status(404).send({
-          message: "User not found",
-        });
-      }
-  
-      // Check if the user is verified
-      if (!user.isVerified) {
-        return res.status(400).send({
-          message: "User is not verified. Please verify your account first.",
-        });
-      }
-  
-      // Add the new song to the song history
-      user.songHistory.push({ songId, songName, banner });
-      await user.save();
-  
-      return res.status(200).send({
-        message: "Song added to the song history",
-        song: { songId, songName, banner },
-      });
-    } catch (error) {
-      return res.status(500).send({
-        message: "Error in adding song to the song history",
-        error: error.message,
+// POST method to add a song to the song history for a user
+export async function addSongToHistory(req, res) {
+  const { username, songId, songName, banner } = req.body;
+  try {
+    if (!username || !songId || !songName || !banner) {
+      return res.status(400).send({
+        message: "Invalid request body. Please provide all required fields.",
       });
     }
+
+    const user = await User.findOne({ username });
+    if (!user) {
+      return res.status(404).send({
+        message: "User not found",
+      });
+    }
+
+    // Check if the user is verified
+    if (!user.isVerified) {
+      return res.status(400).send({
+        message: "User is not verified. Please verify your account first.",
+      });
+    }
+
+    // Check if the song is already in the song history
+    const existingSongIndex = user.songHistory.findIndex((song) => song.songId === songId);
+
+    if (existingSongIndex !== -1) {
+      // If the song already exists, remove it from its current position
+      user.songHistory.splice(existingSongIndex, 1);
+    }
+
+    // Add the new song to the beginning of the song history
+    user.songHistory.unshift({ songId, songName, banner });
+
+    // Trim the song history to the desired limit (optional, if you want to keep a certain number of songs)
+    const maxSongHistoryLength = 50; // For example, keeping only 50 most recent songs
+    if (user.songHistory.length > maxSongHistoryLength) {
+      user.songHistory = user.songHistory.slice(0, maxSongHistoryLength);
+    }
+
+    await user.save();
+
+    return res.status(200).send({
+      message: "Song added to the song history",
+      song: { songId, songName, banner },
+    });
+  } catch (error) {
+    return res.status(500).send({
+      message: "Error in adding song to the song history",
+      error: error.message,
+    });
   }
+}
+
   
   // DELETE method to remove a song from the song history for a user
   export async function removeSongFromHistory(req, res) {
