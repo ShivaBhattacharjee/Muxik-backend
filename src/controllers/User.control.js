@@ -30,24 +30,20 @@ export async function getUser(req, res) {
 // put request to update user
 export async function updateUser(req, res) {
   try {
-    const { username } = req.body.username; 
+    const username = req.query.username; 
     if (username) {
-      const body = req.body; 
+      const body = req.body;
 
-      const updatedUser = await User.findOneAndUpdate(
-        { username: username },
-        body,
-        { new: true } // Return the updated document
-      );
+      const result = await User.updateOne({ username: username }, body);
 
-      if (!updatedUser) { // Check if the user was not found
+      if (result.modifiedCount === 0) {
         return res.status(404).send({
           message: "User not found",
         });
       }
 
       return res.status(200).send({
-        message: "Record updated",
+        message: "Records updated",
       });
     }
   } catch (error) {
@@ -57,3 +53,5 @@ export async function updateUser(req, res) {
     });
   }
 }
+
+  
