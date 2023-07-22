@@ -23,7 +23,7 @@ router.route("/liked-songs/:username").get(isVerified,Auth,MusicControl.getLiked
 router.route("/song-history/:username").get(isVerified,Auth,SongHistory.getSongHistory); 
 
 // PUT methods
-router.route('/update-user').put(isVerified,Auth,UserContol.updateUser);
+router.route('/update-user').put(Auth,UserContol.updateUser);
 
 // DELETE methods
 router.route("/delete-liked-songs/:username/:songId").delete(isVerified,Auth,MusicControl.removeLikedSong);

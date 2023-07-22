@@ -91,7 +91,12 @@ export async function initiatePasswordReset(req, res) {
       });
     }
 
-
+    // Check if the user is verified
+    if (!user.isVerified) {
+      return res.status(403).send({
+        message: 'Password reset not allowed for non-verified users',
+      });
+    }
     // Generate and save OTP for password reset
     const OTP = await generateAndSaveOTP(email);
 
@@ -125,6 +130,12 @@ export async function verifyPasswordReset(req, res) {
     if (!user) {
       return res.status(404).send({
         message: "Email not found",
+      });
+    }
+    // Check if the user is verified
+    if (!user.isVerified) {
+      return res.status(403).send({
+        message: 'Password reset not allowed for non-verified users',
       });
     }
 
