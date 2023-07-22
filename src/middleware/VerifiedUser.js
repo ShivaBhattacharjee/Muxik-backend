@@ -1,9 +1,22 @@
 // isVerifiedMiddleware.js
-import User from '../models/user.model.js'; // Import your User model
+import User from '../models/user.model.js';
 
 export async function isVerified(req, res, next) {
   try {
-    const { username } = req.body; // Assuming the username is provided in the request body
+    let username = req.body.username;
+    const { usernameQuery } = req.query;
+
+    // If username is not in the body, check for usernameQuery in the query parameters
+    if (!username) {
+      username = usernameQuery;
+    }
+
+    // If there's still no username, extract it from the request parameters
+    if (!username) {
+      username = req.params.username;
+    }
+
+    // Check if a valid username is provided
     if (!username) {
       return res.status(400).send({
         message: "Invalid username",
