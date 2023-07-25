@@ -4,12 +4,12 @@ import jwt from "jsonwebtoken";
 import otpGenerator from "otp-generator";
 import { createTransporter } from "../../utils/EmailConfig.js";
 import emailTemplate from "../../utils/Template/RegisterEmail.js";
-
+import passwordResetTemplate from "../../utils/Template/ForgotPassword.js";
 // Function to send OTP by email
 async function sendOTPByEmail(email, otp) {
   try {
     const transporter = createTransporter();
-    
+
     const formattedTemplate = emailTemplate
       .replace(/\${email}/g, email)
       .replace(/\${otp}/g, otp);
@@ -36,19 +36,21 @@ async function sendResetPasswordEmail(email, otp) {
   try {
     // Create a nodemailer transporter with your email provider settings
     const transporter = createTransporter();
-
+    const formattedPasswordReset = passwordResetTemplate
+      .replace(/\${email}/g, email)
+      .replace(/\${otp}/g, otp);
     // Configure the email options
     const mailOptions = {
-      from: 'muxikverification@gmail.com',
+      from: process.env.EMAIL_ID,
       to: email,
-      subject: 'Reset Password',
-      text: `Dear ${email}, you have requested to reset your password. Please use the following OTP to reset your password: ${otp}`,
+      subject: 'Password Reset Request for Your Muxik Account',
+      html: formattedPasswordReset
     };
 
     // Send the email
     const info = await transporter.sendMail(mailOptions);
     console.log('Password reset email sent successfully');
-    return info.messageId; // Return the message ID as a status of successful email sending
+    return info.messageId; 
   } catch (error) {
     console.error('Error while sending password reset email:', error);
     throw new Error('Failed to send password reset email');

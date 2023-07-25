@@ -1,4 +1,3 @@
-// Define your email template as a template literal
 const emailTemplate = `
   <html>
     <body>
