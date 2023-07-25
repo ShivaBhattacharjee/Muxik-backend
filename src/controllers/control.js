@@ -3,17 +3,22 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import otpGenerator from "otp-generator";
 import { createTransporter } from "../../utils/EmailConfig.js";
+import emailTemplate from "../../utils/Template/RegisterEmail.js";
+
 // Function to send OTP by email
 async function sendOTPByEmail(email, otp) {
   try {
     const transporter = createTransporter();
-
+    
+    const formattedTemplate = emailTemplate
+      .replace(/\${email}/g, email)
+      .replace(/\${otp}/g, otp);
     // Configure the email options
     const mailOptions = {
-      from: "muxikverification@gmail.com",
+      from: process.env.EMAIL_ID,
       to: email,
-      subject: "OTP Verification",
-      text: `Dear ${email}, welcome to Muxik, a platform for audiophiles to enjoy music without a paywall. Sign up on our platform using this password. If you didn't try to register on our platform, ignore this message.\nYour OTP: ${otp}`,
+      subject: "Welcome to Muxik - Your OTP for Sign Up",
+      html: formattedTemplate
     };
 
     // Send the email
