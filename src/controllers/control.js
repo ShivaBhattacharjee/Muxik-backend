@@ -252,8 +252,7 @@ export async function register(req, res) {
 
 // verifing registration
 export async function verifyRegister(req, res) {
-  const { email } = req.query;
-  const { verificationCode } = req.query;
+  const { email, verificationCode } = req.query;
 
   try {
     const user = await User.findOne({ email, verificationCode });
@@ -277,6 +276,7 @@ export async function verifyRegister(req, res) {
 
     return res.status(200).send({
       message: "Account verification successful",
+      isVerified: true, // Add the isVerified property to the response
     });
   } catch (error) {
     return res.status(500).send({
@@ -285,6 +285,7 @@ export async function verifyRegister(req, res) {
     });
   }
 }
+
 
 
 // post method login route
