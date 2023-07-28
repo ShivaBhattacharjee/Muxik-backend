@@ -191,10 +191,12 @@ export async function verifyPasswordReset(req, res) {
 
 
 
+
 // post method register route
 export async function register(req, res) {
   try {
     const { username, password, profile, email } = req.body;
+    const resendOTP = req.query.resendOTP === "true"; // Convert the string value to a boolean
 
     // Check if the username or email already exists in the database
     const existingUser = await User.findOne({
@@ -212,34 +214,56 @@ export async function register(req, res) {
       }
     }
 
-    // If the username and email are unique, proceed with user registration
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const OTP = otpGenerator.generate(6, {
-      lowerCaseAlphabets: false,
-      upperCaseAlphabets: false,
-      specialChars: false,
-    });
-    const expirationTime = Date.now() + 10 * 60 * 1000; // 10 minutes from now
-    const newUser = new User({
-      username,
-      password: hashedPassword,
-      profile: profile || "",
-      email,
-      isVerified: false,
-      verificationCode: OTP,
-    });
-    const savedUser = await newUser.save();
+    if (resendOTP) {
+      // If the resendOTP flag is true, resend the OTP
+      const user = await User.findOne({ email });
 
-    // Send OTP to the user's email
-    const otpStatus = await sendOTPByEmail(email, OTP);
+      if (!user) {
+        return res.status(404).send({
+          message: 'Email not found',
+        });
+      }
 
-    res.status(201).send({
-      message: "User registration successful",
-      user: savedUser,
-      verificationMail: email,
-      otpExpire: expirationTime,
-      otpStatus: otpStatus ? `OTP sent to ${email}` : "Failed to send OTP",
-    });
+      // Generate and save new OTP for password reset
+      const OTP = await generateAndSaveOTP(email);
+
+      // Send the OTP via email
+      const emailStatus = await sendOTPByEmail(email, OTP);
+
+      return res.status(201).send({
+        message: "OTP sent for registration",
+        otpStatus: emailStatus ? `OTP sent to ${email}` : "Failed to send OTP",
+      });
+    } else {
+      // If the resendOTP flag is false, proceed with normal registration
+      const hashedPassword = await bcrypt.hash(password, 10);
+      const OTP = otpGenerator.generate(6, {
+        lowerCaseAlphabets: false,
+        upperCaseAlphabets: false,
+        specialChars: false,
+      });
+      const expirationTime = Date.now() + 10 * 60 * 1000; // 10 minutes from now
+      const newUser = new User({
+        username,
+        password: hashedPassword,
+        profile: profile || "",
+        email,
+        isVerified: false,
+        verificationCode: OTP,
+      });
+      const savedUser = await newUser.save();
+
+      // Send OTP to the user's email
+      const otpStatus = await sendOTPByEmail(email, OTP);
+
+      res.status(201).send({
+        message: "User registration successful",
+        user: savedUser,
+        verificationMail: email,
+        otpExpire: expirationTime,
+        otpStatus: otpStatus ? `OTP sent to ${email}` : "Failed to send OTP",
+      });
+    }
   } catch (error) {
     return res.status(500).send({
       message: "Error in register route",
@@ -247,6 +271,7 @@ export async function register(req, res) {
     });
   }
 }
+
 
 
 
