@@ -2,6 +2,7 @@
 
 ## Todo
 - ✅ Register and verify 
+- ✅ OTP Resend
 - ✅ Login 
 - ✅ Get User info 
 - ✅ Update user profile
@@ -39,6 +40,7 @@ npm dev / to start in developement mode
 | API ROUTES          | Type     | Description                                                                                                                     |
 | ------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------- |
 | `/api/register` | POST   | Make a post request to register a user (username, email, and password are mandatory, profile is optional)  |
+| `/api/register?resendOTP=true` | POST   | post request to get another otp  |
 | `/api/verify-register?email=<email.id>`    | POST   | takes verificationCode as a body request and verifies the user  
 | `/api/login`    | POST   | Make a post request with the email and password to retrieve data                                                            |
 | `/api/user/userid`    | GET   | Shows user information and profile   

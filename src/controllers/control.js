@@ -191,79 +191,47 @@ export async function verifyPasswordReset(req, res) {
 
 
 
-
 // post method register route
 export async function register(req, res) {
   try {
     const { username, password, profile, email } = req.body;
-    const resendOTP = req.query.resendOTP === "true"; // Convert the string value to a boolean
 
-    // Check if the username or email already exists in the database
-    const existingUser = await User.findOne({
-      $or: [{ username }, { email }],
-    });
+    // Check if the email already exists in the database
+    const existingUser = await User.findOne({ email });
     if (existingUser) {
-      if (existingUser.email === email) {
-        return res.status(400).send({
-          message: "An account with this email already exists",
-        });
-      } else if (existingUser.username === username) {
-        return res.status(400).send({
-          message: "Username is already taken",
-        });
-      }
-    }
-
-    if (resendOTP) {
-      // If the resendOTP flag is true, resend the OTP
-      const user = await User.findOne({ email });
-
-      if (!user) {
-        return res.status(404).send({
-          message: 'Email not found',
-        });
-      }
-
-      // Generate and save new OTP for password reset
-      const OTP = await generateAndSaveOTP(email);
-
-      // Send the OTP via email
-      const emailStatus = await sendOTPByEmail(email, OTP);
-
-      return res.status(201).send({
-        message: "OTP sent for registration",
-        otpStatus: emailStatus ? `OTP sent to ${email}` : "Failed to send OTP",
-      });
-    } else {
-      // If the resendOTP flag is false, proceed with normal registration
-      const hashedPassword = await bcrypt.hash(password, 10);
-      const OTP = otpGenerator.generate(6, {
-        lowerCaseAlphabets: false,
-        upperCaseAlphabets: false,
-        specialChars: false,
-      });
-      const expirationTime = Date.now() + 10 * 60 * 1000; // 10 minutes from now
-      const newUser = new User({
-        username,
-        password: hashedPassword,
-        profile: profile || "",
-        email,
-        isVerified: false,
-        verificationCode: OTP,
-      });
-      const savedUser = await newUser.save();
-
-      // Send OTP to the user's email
-      const otpStatus = await sendOTPByEmail(email, OTP);
-
-      res.status(201).send({
-        message: "User registration successful",
-        user: savedUser,
-        verificationMail: email,
-        otpExpire: expirationTime,
-        otpStatus: otpStatus ? `OTP sent to ${email}` : "Failed to send OTP",
+      return res.status(400).send({
+        message: "An account with this email already exists",
       });
     }
+
+    // If the email doesn't exist, proceed with normal registration
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const OTP = otpGenerator.generate(6, {
+      lowerCaseAlphabets: false,
+      upperCaseAlphabets: false,
+      specialChars: false,
+    });
+    const expirationTime = Date.now() + 10 * 60 * 1000; // 10 minutes from now
+    const newUser = new User({
+      username,
+      password: hashedPassword,
+      profile: profile || "",
+      email,
+      isVerified: false,
+      verificationCode: OTP,
+    });
+    const savedUser = await newUser.save();
+
+    // Send OTP to the user's email
+    const otpStatus = await sendOTPByEmail(email, OTP);
+
+    res.status(201).send({
+      message: "User registration successful",
+      user: savedUser,
+      verificationMail: email,
+      otpExpire: expirationTime,
+      otpStatus: otpStatus ? `OTP sent to ${email}` : "Failed to send OTP",
+    });
   } catch (error) {
     return res.status(500).send({
       message: "Error in register route",
@@ -271,6 +239,8 @@ export async function register(req, res) {
     });
   }
 }
+
+
 
 
 
@@ -306,6 +276,53 @@ export async function verifyRegister(req, res) {
   } catch (error) {
     return res.status(500).send({
       message: "Error in account verification",
+      error: error.message,
+    });
+  }
+}
+
+// POST method for resending verification email
+export async function resendVerificationEmail(req, res) {
+  const { email } = req.query;
+  try {
+    // Check if the email exists in the database
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).send({
+        message: 'Email not found',
+      });
+    }
+
+    // Check if the user is already verified
+    if (user.isVerified) {
+      return res.status(400).send({
+        message: 'User is already verified',
+      });
+    }
+
+    // Generate and save a new verification code
+    const OTP = otpGenerator.generate(6, {
+      lowerCaseAlphabets: false,
+      upperCaseAlphabets: false,
+      specialChars: false,
+    });
+    const expirationTime = Date.now() + 10 * 60 * 1000; // 10 minutes from now
+    user.verificationCode = OTP;
+    user.otpExpire = expirationTime;
+    await user.save();
+
+    // Send the new verification code via email
+    const emailStatus = await sendOTPByEmail(email, OTP);
+
+    res.status(200).send({
+      message: 'Verification email resent',
+      email,
+      otpExpire: expirationTime,
+      otpStatus: emailStatus ? `OTP sent to ${email}` : 'Failed to send OTP',
+    });
+  } catch (error) {
+    return res.status(500).send({
+      message: 'Error in resending verification email',
       error: error.message,
     });
   }

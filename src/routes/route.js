@@ -11,6 +11,7 @@ const router = Router();
 // POST methods
 router.route('/register').post(validateEmail, controller.register);
 router.route('/verify-register').post(controller.verifyRegister);
+router.route('/resend-email').post(controller.resendVerificationEmail);
 router.route('/reset-password').post(controller.initiatePasswordReset);
 router.route('/verify-reset-password').post(validateEmail,controller.verifyPasswordReset);
 router.route('/login').post(isVerified,controller.login);
