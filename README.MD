@@ -65,7 +65,7 @@ Muxik backend api is built using express , Mongodb , JWT and Nodemailer
 
 ### Installation
 <b>Rename env.example to env and fill the values</b>
-> **⚠️ Note: MongoDb memory server can be used by changing the config inside Databse.js**
+> **⚠️ Note: MongoDb memory server can be used by changing the config inside Database.js**
 
 ```sh
 git clone https://github.com/ShivaBhattacharjee/Muxik-backend
@@ -99,7 +99,7 @@ Distributed under GNU GENERAL PUBLIC LICENSE . See [LICENSE](https://github.com/
 - ✅ Update user profile
 - ✅ Reset Password 
 - ✅ custom email for register account and reset passowrd 
-- ✅ Verify Reset passowrd
+- ✅ Verify Reset password
 - ✅ Liked Songs
 - ✅ History
 - ❌ Custom Playlists
