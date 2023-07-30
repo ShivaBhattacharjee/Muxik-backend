@@ -46,20 +46,23 @@
 <b>Rename env.example to env and fill the values</b>
 > **⚠️ Note: MongoDb memory server can be used by changing the config inside Databse.js**
 
-```
+```sh
 git clone https://github.com/ShivaBhattacharjee/Muxik-backend
 ```
+```sh
+cd Muxik-backend
 ```
+```sh
 npm install
 ```
-<h4 align="center">To start in development mode</h4>
+To start in development mode
 
-```
+```sh
 npm run dev 
 ```
-<h5 align="center">Or</h5>
+Or
 
-```
+```sh
 npm start
 ```
 ## License
