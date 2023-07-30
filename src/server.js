@@ -31,7 +31,7 @@ connect().then(()=>{
             console.log("🗄️ Server started at http://localhost:" + process.env.PORT)
         })
     }catch(error){
-        console.log("⚠️ Cannot connect to server")
+        console.log("⚠️ Cannot connect to server" + error)
     }
 }).catch(error=>{
     console.log("⚠️ Connection failed " + error)
