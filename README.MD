@@ -27,16 +27,16 @@
 * [Getting Started](#getting-started)
   * [Prerequisites](#prerequisites)
   * [Installation](#installation)
+* [Routes](#routes)
+  * [GET](#get)
+  * [POST](#post)
+  * [DELETE](#delete)
+  * [ALL](#all)
+* [Dummy data](#authors)
 * [Contributing](#contributing)
-* [Routes](#getting-started)
-  * [GET](#prerequisites)
-  * [POST](#installation)
-  * [DELETE](#installation)
-  * [ALL](#installation)
 * [Issue Template](#raising-an-issue)
 * [License](#license)
 * [Todo](#todo)
-* [Example](#authors)
 * [Authors](#authors)
 
 
@@ -86,6 +86,24 @@ Or
 ```sh
 npm start
 ```
+
+## Routes
+<b>URL</b> : localhost:8080/api/endpoint
+### GET
+| Endpoint | Method |Bearer Token | Description |
+| -------- | ----- | ----------- |----------- |
+| /user/username | GET   | Required | Get user info |
+| /liked-songs/username | GET   | Required | Get Liked songs |
+| /song-history/username | GET   | Required | Get song history
+
+### Post
+| Endpoint | Method |Bearer Token | Description |
+| -------- | ----- | ----------- |----------- |
+| /register | POST   | No | cl |
+| /verify-register| POST  | No |  |
+| /resend-email | POST   | No | |
+
+
 ## License
 
 Distributed under MIT License . See [LICENSE](https://github.com/ShivaBhattacharjee/Muxik-backend/blob/main/LICENSE) for more information.
