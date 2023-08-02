@@ -30,9 +30,10 @@
 * [Routes](#routes)
   * [GET](#get)
   * [POST](#post)
+   * [PUT](#put)
   * [DELETE](#delete)
-  * [ALL](#all)
-* [Dummy data](#authors)
+* [Dummy data](#dummy-data)
+  * [Register](#get)
 * [Contributing](#contributing)
 * [Issue Template](#raising-an-issue)
 * [License](#license)
@@ -88,22 +89,35 @@ npm start
 ```
 
 ## Routes
-<b>URL</b> : localhost:8080/api/endpoint
 ### GET
 | Endpoint | Method |Bearer Token | Description |
 | -------- | ----- | ----------- |----------- |
-| /user/username | GET   | Required | Get user info |
-| /liked-songs/username | GET   | Required | Get Liked songs |
-| /song-history/username | GET   | Required | Get song history
+| api/user/username | GET   | Required | Get user info |
+| api/liked-songs/username | GET   | Required | Get Liked songs |
+| api/song-history/username | GET   | Required | Get song history
 
 ### Post
 | Endpoint | Method |Bearer Token | Description |
 | -------- | ----- | ----------- |----------- |
-| /register | POST   | No | cl |
-| /verify-register| POST  | No |  |
-| /resend-email | POST   | No | |
+| api/register | POST   | No |  |
+| api/verify-register?email=email&verificationCode=code| POST  | No |  |
+| api/resend-email?email=email | POST   | No | |
+|api/reset-password|POST |No ||
+|api/verify-reset-password|POST |No ||
+|api/login|POST |No ||
+|api/add-liked-songs|POST |Yes ||
+|api/add-song-history|POST |Yes ||
 
+### Put
+| Endpoint | Method |Bearer Token | Description |
+| -------- | ----- | ----------- |----------- |
+| api/update-user  | PUT  | YES   |  |
 
+### Delete
+| Endpoint | Method |Bearer Token | Description |
+| -------- | ----- | ----------- |----------- |
+| api/delete-liked-songs/:username/:songId  | PUT  | YES   |  |
+| api/delete-song-history/:username/:songId | PUT  | YES   |  |
 ## License
 
 Distributed under MIT License . See [LICENSE](https://github.com/ShivaBhattacharjee/Muxik-backend/blob/main/LICENSE) for more information.
