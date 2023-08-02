@@ -1,6 +1,3 @@
-import User from "../models/user.model.js";
-import bcrypt from "bcrypt";
-import otpGenerator from "otp-generator";
 import { createTransporter } from "../../utils/EmailConfig.js";
 import emailTemplate from "../../utils/Template/RegisterEmail.js";
 import passwordResetTemplate from "../../utils/Template/ForgotPassword.js";
