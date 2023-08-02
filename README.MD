@@ -8,9 +8,9 @@
     Backend logic for login signup and storing history/liked
     <br/>
     <br/>
-    <a href="https://github.com/ShivaBhattacharjee/Muxik/issues">Report Bug</a>
+    <a href="https://github.com/ShivaBhattacharjee/Muxik-backend/issues">Report Bug</a>
     .
-    <a href="https://github.com/ShivaBhattacharjee/Muxik/issues">Request Feature</a>
+    <a href="https://github.com/ShivaBhattacharjee/Muxik-backend/issues">Request Feature</a>
   </p>
 </p>
 
@@ -88,7 +88,7 @@ npm start
 ```
 ## License
 
-Distributed under GNU GENERAL PUBLIC LICENSE . See [LICENSE](https://github.com/ShivaBhattacharjee/Muxik/blob/main/LICENSE) for more information.
+Distributed under MIT License . See [LICENSE](https://github.com/ShivaBhattacharjee/Muxik-backend/blob/main/LICENSE) for more information.
 
 
 ## Todo
