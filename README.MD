@@ -34,6 +34,12 @@
   * [DELETE](#delete)
 * [Dummy data](#dummy-data)
   * [Register](#get)
+  * [Login](#get)
+  * [Reset Password](#get)
+    * [Verify Reset Password](#get)
+  * [Add Liked songs](#get)
+  * [Add song history](#get)
+  * [Update User](#get)
 * [Contributing](#contributing)
 * [Issue Template](#raising-an-issue)
 * [License](#license)
@@ -116,8 +122,8 @@ npm start
 ### Delete
 | Endpoint | Method |Bearer Token | Description |
 | -------- | ----- | ----------- |----------- |
-| api/delete-liked-songs/:username/:songId  | PUT  | YES   |  |
-| api/delete-song-history/:username/:songId | PUT  | YES   |  |
+| api/delete-liked-songs/:username/:songId  | DELETE | YES   |  |
+| api/delete-song-history/:username/:songId | DELETE  | YES   |  |
 ## License
 
 Distributed under MIT License . See [LICENSE](https://github.com/ShivaBhattacharjee/Muxik-backend/blob/main/LICENSE) for more information.
