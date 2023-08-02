@@ -117,7 +117,7 @@ npm start
 ### Put
 | Endpoint | Method |Bearer Token | Description |
 | -------- | ----- | ----------- |----------- |
-| api/update-user  | PUT  | YES   |  |
+| api/update-user?username=username  | PUT  | YES   |  |
 
 ### Delete
 | Endpoint | Method |Bearer Token | Description |
