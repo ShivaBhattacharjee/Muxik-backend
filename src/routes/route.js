@@ -1,5 +1,4 @@
 import { Router } from "express";
-import * as controller from "../controllers/control.js";
 import Auth from "../middleware/Authenticate.js";
 import validateEmail from "../middleware/EmailValidate.js";
 import * as MusicControl from "../controllers/LikedSongs.control.js"
