@@ -1,7 +1,7 @@
 import User from "../models/user.model.js";
 import bcrypt from "bcrypt";
 import otpGenerator from "otp-generator";
-import { sendResetPasswordEmail } from "./control.js";
+import { sendResetPasswordEmail } from "./Otp.control.js"
 
 // Function to generate and save OTP for password reset
 async function generateAndSaveOTP(email) {

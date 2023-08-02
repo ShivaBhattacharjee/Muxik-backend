@@ -1,5 +1,5 @@
 import User from "../models/user.model.js";
-import { sendOTPByEmail } from "./control.js";
+import { sendOTPByEmail } from "./Otp.control.js";
 import jwt from "jsonwebtoken";
 import otpGenerator from "otp-generator";
 import bcrypt from "bcrypt";

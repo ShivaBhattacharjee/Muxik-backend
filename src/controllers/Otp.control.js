@@ -54,11 +54,6 @@ export async function sendResetPasswordEmail(email, otp) {
 }
 
 
-
-
-
-
-
 // Function to send the reset session status
 // export async function resetSession(req, res) {
 //   if (req.app.locals.resetSession) {
