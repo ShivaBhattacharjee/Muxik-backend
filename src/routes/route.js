@@ -1,10 +1,10 @@
 import { Router } from "express";
-import * as controller from "../controllers/control.js";
 import Auth from "../middleware/Authenticate.js";
 import validateEmail from "../middleware/EmailValidate.js";
 import * as MusicControl from "../controllers/LikedSongs.control.js"
 import * as SongHistory from "../controllers/SongHistory.control.js"
 import * as UserContol from "../controllers/User.control.js"
+// import * as ResetPasswordControl from "../controllers/ResetPassword.control.js"
 import { isVerified } from "../middleware/VerifiedUser.js";
 const router = Router();
 
@@ -12,8 +12,8 @@ const router = Router();
 router.route('/register').post(validateEmail, UserContol.register);
 router.route('/verify-register').post(UserContol.verifyRegister);
 router.route('/resend-email').post(UserContol.resendVerificationEmail);
-router.route('/reset-password').post(controller.initiatePasswordReset);
-router.route('/verify-reset-password').post(validateEmail,controller.verifyPasswordReset);
+// router.route('/reset-password').post(ResetPasswordControl.initiatePasswordReset);
+// router.route('/verify-reset-password').post(validateEmail,ResetPasswordControl.verifyPasswordReset);
 router.route('/login').post(isVerified,UserContol.login);
 router.route("/add-liked-songs").post(isVerified,Auth,MusicControl.addLikedSong);
 router.route("/add-song-history").post(isVerified,Auth,SongHistory.addSongToHistory); 

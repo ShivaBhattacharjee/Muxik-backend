@@ -2,6 +2,7 @@
 
 git clone https://github.com/ShivaBhattacharjee/Muxik-backend
 echo "Cloning done"
-cd Recordiy
+cd Muxik-backend
 code .
-wait
+npm install
+npm run dev
