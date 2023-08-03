@@ -116,8 +116,8 @@ npm start
 |api/add-song-history|POST |Yes |
 
 ### Put
-| Endpoint | Method |Bearer Token | Description |
-| -------- | ----- | ----------- |----------- |
+| Endpoint | Method |Bearer Token |
+| -------- | ----- | ----------- |
 | api/update-user?username=username  | PUT  | YES   |  
 
 ### Delete
