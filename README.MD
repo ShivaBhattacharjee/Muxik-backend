@@ -33,9 +33,9 @@
    * [PUT](#put)
   * [DELETE](#delete)
 * [Dummy data](#dummy-data)
-  * [Register](#get)
-  * [Login](#get)
-  * [Reset Password](#get)
+  * [Register](#register)
+  * [Login](#login)
+  * [Reset Password](#reset-password)
     * [Verify Reset Password](#get)
   * [Add Liked songs](#get)
   * [Add song history](#get)
@@ -95,6 +95,7 @@ npm start
 ```
 
 ## Routes
+> **⚠️ Note: Bearer Token can be obtained after successfull login**
 ### GET
 | Endpoint | Method |Bearer Token | Description |
 | -------- | ----- | ----------- |----------- |
@@ -105,7 +106,7 @@ npm start
 ### Post
 | Endpoint | Method |Bearer Token | Description |
 | -------- | ----- | ----------- |----------- |
-| api/register | POST   | No |  |
+| api/register | POST   | No |  | 
 | api/verify-register?email=email&verificationCode=code| POST  | No |  |
 | api/resend-email?email=email | POST   | No | |
 |api/reset-password|POST |No ||
@@ -124,6 +125,65 @@ npm start
 | -------- | ----- | ----------- |----------- |
 | api/delete-liked-songs/:username/:songId  | DELETE | YES   |  |
 | api/delete-song-history/:username/:songId | DELETE  | YES   |  |
+
+
+## Dummy data
+
+
+### Register
+```sh
+{
+ "username" : "user",
+ "password" : "password",
+ "email" : "email@gmail.com",
+ "profile" : "thisIsImage"
+}
+```
+> **⚠️ Note: Only users verified via otp can login**
+### Login
+
+```sh
+{
+  "username":"user",
+  "password" : "password"
+}
+```
+
+### Reset Password
+```sh
+{
+   "email": "email of registered user"
+}
+```
+
+#### Verify Reset Password
+```sh
+{
+  "email": "email@gmail.com",
+  "otp": "otp",
+  "newPassword": "heythere"
+}
+```
+
+### Add Liked songs
+```sh
+{
+  "username": "user",
+  "songId": "1234",
+  "songName": "test song",
+  "banner": "https://example.com/song_banner.jpg"
+}
+```
+### Add History
+
+```sh
+{
+  "username": "user",
+  "songId" : "1234", 
+  "songName" : "test song", 
+  "banner" : "https://example.com/song_banner.jpg"
+}
+```
 ## License
 
 Distributed under MIT License . See [LICENSE](https://github.com/ShivaBhattacharjee/Muxik-backend/blob/main/LICENSE) for more information.
