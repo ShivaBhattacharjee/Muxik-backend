@@ -36,9 +36,9 @@
   * [Register](#register)
   * [Login](#login)
   * [Reset Password](#reset-password)
-    * [Verify Reset Password](#get)
-  * [Add Liked songs](#get)
-  * [Add song history](#get)
+    * [Verify Reset Password](#verify-reset-password)
+  * [Add Liked songs](#add-liked-songs)
+  * [Add song history](#add-history)
   * [Update User](#get)
 * [Contributing](#contributing)
 * [Issue Template](#raising-an-issue)
@@ -97,35 +97,34 @@ npm start
 ## Routes
 > **⚠️ Note: Bearer Token can be obtained after successfull login**
 ### GET
-| Endpoint | Method |Bearer Token | Description |
-| -------- | ----- | ----------- |----------- |
-| api/user/username | GET   | Required | Get user info |
-| api/liked-songs/username | GET   | Required | Get Liked songs |
-| api/song-history/username | GET   | Required | Get song history
+| Endpoint | Method |Bearer Token |
+| -------- | ----- | ----------- |
+| api/user/username | GET   | Required |
+| api/liked-songs/username | GET   | Required |
+| api/song-history/username | GET   | Required | 
 
 ### Post
-| Endpoint | Method |Bearer Token | Description |
-| -------- | ----- | ----------- |----------- |
+| Endpoint | Method |Bearer Token | 
+| -------- | ----- | ----------- |
 | api/register | POST   | No |  | 
-| api/verify-register?email=email&verificationCode=code| POST  | No |  |
-| api/resend-email?email=email | POST   | No | |
+| api/verify-register?email=email&verificationCode=code| POST  | No |  
+| api/resend-email?email=email | POST   | No | 
 |api/reset-password|POST |No ||
-|api/verify-reset-password|POST |No ||
+|api/verify-reset-password|POST |No |
 |api/login|POST |No ||
-|api/add-liked-songs|POST |Yes ||
-|api/add-song-history|POST |Yes ||
+|api/add-liked-songs|POST |Yes |
+|api/add-song-history|POST |Yes |
 
 ### Put
 | Endpoint | Method |Bearer Token | Description |
 | -------- | ----- | ----------- |----------- |
-| api/update-user?username=username  | PUT  | YES   |  |
+| api/update-user?username=username  | PUT  | YES   |  
 
 ### Delete
-| Endpoint | Method |Bearer Token | Description |
-| -------- | ----- | ----------- |----------- |
-| api/delete-liked-songs/:username/:songId  | DELETE | YES   |  |
-| api/delete-song-history/:username/:songId | DELETE  | YES   |  |
-
+| Endpoint | Method |Bearer Token |
+| -------- | ----- | ----------- |
+| api/delete-liked-songs/:username/:songId  | DELETE | YES   |  
+| api/delete-song-history/:username/:songId | DELETE  | YES   |  
 
 ## Dummy data
 
@@ -182,6 +181,13 @@ npm start
   "songId" : "1234", 
   "songName" : "test song", 
   "banner" : "https://example.com/song_banner.jpg"
+}
+```
+### Update user
+```sh
+{
+  "username" : "new username"
+  "profile" : "new profile"
 }
 ```
 ## License
