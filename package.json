@@ -4,10 +4,10 @@
   "private": false,
   "description": "",
   "type": "module",
-  "main": "index.js",
+  "main": "App.js",
   "scripts": {
-    "start": "node src/server.js",
-    "dev": "nodemon src/server.js"
+    "start": "node App.js",
+    "dev": "nodemon App.js"
   },
   "keywords": [
     "music",
@@ -22,6 +22,7 @@
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
+    "express-rate-limit": "^7.1.5",
     "jsonwebtoken": "^9.0.0",
     "mailgen": "^2.0.27",
     "mongoose": "^7.3.1",
