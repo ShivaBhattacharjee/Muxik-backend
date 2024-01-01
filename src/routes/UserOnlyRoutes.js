@@ -4,7 +4,7 @@ import {
   addLikedSong,
   removeLikedSong,
 } from "../controllers/LikedSongs.control.js";
-
+import { isVerified } from "../middleware/VerifiedUser.js";
 import {
   addSongToHistory,
   getSongHistory,
@@ -18,7 +18,7 @@ import jwtTokenCheck from "../middleware/JwtTokenCheck.js";
 const UserRoutes = Router();
 
 UserRoutes.route("/liked-songs")
-  .all(jwtTokenCheck)
+  .all(jwtTokenCheck, isVerified)
   .get((req, res) => {
     getLikedSongs(req, res);
   })
@@ -30,7 +30,7 @@ UserRoutes.route("/liked-songs")
   });
 
 UserRoutes.route("/history")
-  .all(jwtTokenCheck)
+  .all(jwtTokenCheck, isVerified)
   .get((req, res) => {
     getSongHistory(req, res);
   })
@@ -42,7 +42,7 @@ UserRoutes.route("/history")
   });
 
 UserRoutes.route("/user-info")
-  .all(jwtTokenCheck)
+  .all(jwtTokenCheck, isVerified)
   .get((req, res) => {
     getUser(req, res);
   })
