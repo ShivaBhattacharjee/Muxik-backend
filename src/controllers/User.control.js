@@ -108,9 +108,14 @@ export async function ResendVerificationEmail(req, res) {
 }
 
 export async function Login(req, res) {
-  const { email, password } = req.body;
   try {
-    const user = await User.findOne({ email });
+    const { email, password } = req.body;
+    if (!email || !password) {
+      return res
+        .status(HTTP_STATUS.BAD_REQUEST)
+        .send({ error: errorMessage.REQUIRED_FIELDS });
+    }
+    const user = await User.findOne({ email: email });
     if (!(email && password)) {
       return res.status(HTTP_STATUS.BAD_REQUEST).send({
         error: errorMessage.REQUIRED_FIELDS,

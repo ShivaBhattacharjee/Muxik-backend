@@ -31,7 +31,7 @@ export async function InitiateResetPassword(req, res) {
   }
 }
 
-export async function ConfirmResetPassword(req, res) {
+export function ConfirmResetPassword(req, res) {
   try {
     const { email, otp, newPassword } = req.body;
     if (!(email && otp && newPassword)) {
