@@ -15,8 +15,6 @@ const jwtTokenCheck = (req, res, next) => {
 
   try {
     const decodedToken = decryptJwt(token);
-
-    // Assuming your JWT payload has a field called 'username'
     const username = decodedToken.username;
 
     if (!username) {
