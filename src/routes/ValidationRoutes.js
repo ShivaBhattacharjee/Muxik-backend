@@ -7,6 +7,10 @@ import {
 } from "../controllers/User.control.js";
 import ValidateEmailRegex from "../middleware/EmailRegexCheck.js";
 import { isVerified } from "../middleware/VerifiedUser.js";
+import {
+  ConfirmResetPassword,
+  InitiateResetPassword,
+} from "../controllers/ResetPassword.control.js";
 const Validationrouter = Router();
 
 // validation routes
@@ -19,7 +23,14 @@ Validationrouter.route("/resent-verification-otp").post(
   ValidateEmailRegex,
   ResendVerificationEmail
 );
-Validationrouter.route("/reset-password").post(ValidateEmailRegex);
+Validationrouter.route("/reset-password").post(
+  ValidateEmailRegex,
+  InitiateResetPassword
+);
+Validationrouter.route("/confirm-reset-password").post(
+  ValidateEmailRegex,
+  ConfirmResetPassword
+);
 Validationrouter.route("/login").post(ValidateEmailRegex, isVerified, Login);
 
 export default Validationrouter;

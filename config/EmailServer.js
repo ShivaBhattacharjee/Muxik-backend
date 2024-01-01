@@ -2,7 +2,6 @@ import nodemailer from "nodemailer";
 
 // Function to create and return a nodemailer transporter for development
 // get host port and other info from https://ethereal.email/create
-// this is test data
 // export default function Transporter() {
 //   return nodemailer.createTransport({
 //     host: "smtp.ethereal.email",
@@ -15,7 +14,6 @@ import nodemailer from "nodemailer";
 // }
 
 // for production
-
 export default function Transporter() {
   return nodemailer.createTransport({
     service: process.env.EMAIL_SERVICE,

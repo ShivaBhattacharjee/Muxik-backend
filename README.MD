@@ -22,29 +22,34 @@
 
 ## Table Of Contents
 
-* [About the Project](#about-the-project)
-* [Built With](#built-with)
-* [Getting Started](#getting-started)
-  * [Prerequisites](#prerequisites)
-  * [Installation](#installation)
-* [Routes](#routes)
-  * [GET](#get)
-  * [POST](#post)
-   * [PUT](#put)
-  * [DELETE](#delete)
-* [Dummy data](#dummy-data)
-  * [Register](#register)
-  * [Login](#login)
-  * [Reset Password](#reset-password)
-    * [Verify Reset Password](#verify-reset-password)
-  * [Add Liked songs](#add-liked-songs)
-  * [Add song history](#add-history)
-  * [Update User](#get)
-* [Contributing](#contributing)
-* [Issue Template](#raising-an-issue)
-* [License](#license)
-* [Todo](#todo)
-* [Authors](#authors)
+- [Table Of Contents](#table-of-contents)
+- [About the Project](#about-the-project)
+- [Built With](#built-with)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+- [Routes](#routes)
+  - [Authentication](#authentication)
+    - [POST](#post)
+  - [Users / Public](#users--public)
+    - [GET](#get)
+    - [POST](#post-1)
+    - [DELETE](#delete)
+    - [PUT](#put)
+- [Dummy data](#dummy-data)
+  - [Register](#register)
+  - [Verify Register](#verify-register)
+  - [Login](#login)
+  - [Reset Password](#reset-password)
+  - [Confirm Reset Password](#confirm-reset-password)
+  - [Add Liked songs](#add-liked-songs)
+  - [Delete Liked Songs](#delete-liked-songs)
+  - [Add History](#add-history)
+  - [Delete History](#delete-history)
+  - [Update user](#update-user)
+- [License](#license)
+- [Todo](#todo)
+- [Authors](#authors)
 
 
 ## About the Project
@@ -96,35 +101,43 @@ npm start
 
 ## Routes
 > **⚠️ Note: Bearer Token can be obtained after successfull login**
-### GET
-| Endpoint | Method |Bearer Token |
-| -------- | ----- | ----------- |
-| api/user/username | GET   | Required |
-| api/liked-songs/username | GET   | Required |
-| api/song-history/username | GET   | Required | 
-
-### Post
+### Authentication
+#### POST
 | Endpoint | Method |Bearer Token | 
 | -------- | ----- | ----------- |
-| api/register | POST   | No |  | 
-| api/verify-register?email=email&verificationCode=code| POST  | No |  
-| api/resend-email?email=email | POST   | No | 
+| api/validation/register | POST   | No |  | 
+| api/verify-register| POST  | No |  
+| api/resend-email | POST   | No | 
 |api/reset-password|POST |No ||
-|api/verify-reset-password|POST |No |
+|api/confirm-reset-password|POST |No |
 |api/login|POST |No ||
-|api/add-liked-songs|POST |Yes |
-|api/add-song-history|POST |Yes |
 
-### Put
-| Endpoint | Method |Bearer Token |
-| -------- | ----- | ----------- |
-| api/update-user?username=username  | PUT  | YES   |  
+### Users / Public
+> ⚠️ Note: Routes remain the same for both liked and history requests; the method used will determine which function triggers the database queries. The queries depend on the username obtained from the bearer token.
 
-### Delete
-| Endpoint | Method |Bearer Token |
+
+#### GET
+| Endpoint | Method |Bearer Token | 
 | -------- | ----- | ----------- |
-| api/delete-liked-songs/:username/:songId  | DELETE | YES   |  
-| api/delete-song-history/:username/:songId | DELETE  | YES   |  
+|api/user/liked-songs|GET |Yes 
+|api/user/history|GET |Yes |
+|api/user/user-info|GET |Yes |
+#### POST
+| Endpoint | Method |Bearer Token | 
+| -------- | ----- | ----------- |
+|api/user/liked-songs|POST |Yes 
+|api/user/history|POST |Yes |
+|api/user/user-info|POST |Yes |
+
+#### DELETE
+| Endpoint | Method |Bearer Token | 
+| -------- | ----- | ----------- |
+|api/user/liked-songs|DELETE |Yes 
+|api/user/history|DELETE |Yes |
+#### PUT
+| Endpoint | Method |Bearer Token | 
+| -------- | ----- | ----------- |
+|api/user/user-info|PUT |Yes |  
 
 ## Dummy data
 
@@ -136,6 +149,13 @@ npm start
  "password" : "password",
  "email" : "email@gmail.com",
  "profile" : "thisIsImage"
+}
+```
+### Verify Register
+```sh
+{
+  "email" : "email@gmail.com", 
+  "verificationCode" : "code"
 }
 ```
 > **⚠️ Note: Only users verified via otp can login**
@@ -155,12 +175,12 @@ npm start
 }
 ```
 
-#### Verify Reset Password
+### Confirm Reset Password
 ```sh
 {
   "email": "email@gmail.com",
   "otp": "otp",
-  "newPassword": "heythere"
+  "newPassword": "new password"
 }
 ```
 
@@ -173,6 +193,12 @@ npm start
   "banner": "https://example.com/song_banner.jpg"
 }
 ```
+### Delete Liked Songs
+```sh
+{
+  "songId" : "song id"
+}
+```
 ### Add History
 
 ```sh
@@ -181,6 +207,13 @@ npm start
   "songId" : "1234", 
   "songName" : "test song", 
   "banner" : "https://example.com/song_banner.jpg"
+}
+```
+### Delete History
+
+```sh
+{
+  "songId" : "song id"
 }
 ```
 ### Update user
