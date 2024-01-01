@@ -106,11 +106,11 @@ npm start
 | Endpoint | Method |Bearer Token | 
 | -------- | ----- | ----------- |
 | api/validation/register | POST   | No |  | 
-| api/verify-register| POST  | No |  
-| api/resend-email | POST   | No | 
-|api/reset-password|POST |No ||
-|api/confirm-reset-password|POST |No |
-|api/login|POST |No ||
+| api/validation/verify-register| POST  | No |  
+| api/validation/resend-email | POST   | No | 
+|api/validation/reset-password|POST |No ||
+|api/validation/confirm-reset-password|POST |No |
+|api/validation/login|POST |No ||
 
 ### Users / Public
 > ⚠️ Note: Routes remain the same for both liked and history requests; the method used will determine which function triggers the database queries. The queries depend on the username obtained from the bearer token.
