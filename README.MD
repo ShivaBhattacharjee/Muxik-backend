@@ -39,6 +39,7 @@
 - [Dummy data](#dummy-data)
   - [Register](#register)
   - [Verify Register](#verify-register)
+  - [Resend Registration Email](#resend-registration-email)
   - [Login](#login)
   - [Reset Password](#reset-password)
   - [Confirm Reset Password](#confirm-reset-password)
@@ -157,6 +158,10 @@ npm start
   "email" : "email@gmail.com", 
   "verificationCode" : "code"
 }
+```
+### Resend Registration Email
+```sh
+  "email" : "email@gmail.com"
 ```
 > **⚠️ Note: Only users verified via otp can login**
 ### Login
