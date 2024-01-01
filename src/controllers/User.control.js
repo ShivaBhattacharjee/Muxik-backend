@@ -1,178 +1,161 @@
 import User from "../models/user.model.js";
-import { sendOTPByEmail } from "./Otp.control.js";
+import sendEmail from "../helpers/sendEmail.js";
 import jwt from "jsonwebtoken";
-import otpGenerator from "otp-generator";
-import bcrypt from "bcrypt";
-// post method to register user
-export async function register(req, res) {
+import { comparePassword } from "../helpers/comparePasswordHash.js";
+import { HashPassword } from "../helpers/hashPassword.js";
+import { OTPGenerator } from "../helpers/generateOtp.js";
+import { HTTP_STATUS, errorMessage } from "../enums/enums.js";
+
+export async function Register(req, res) {
   try {
     const { username, password, profile, email } = req.body;
 
-    // Check if the email already exists in the database
+    if (!(username && password && profile && email)) {
+      return res.status(HTTP_STATUS.BAD_REQUEST).send({
+        error: errorMessage.REQUIRED_FIELDS,
+      });
+    }
     const existingUser = await User.findOne({ email });
+
     if (existingUser) {
-      return res.status(400).send({
-        message: "An account with this email already exists",
+      return res.status(HTTP_STATUS.BAD_REQUEST).send({
+        error: errorMessage.USER_ALREADY_EXIST,
       });
     }
 
-    // If the email doesn't exist, proceed with normal registration
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const OTP = otpGenerator.generate(6, {
-      lowerCaseAlphabets: false,
-      upperCaseAlphabets: false,
-      specialChars: false,
-    });
-    const expirationTime = Date.now() + 10 * 60 * 1000; // 10 minutes from now
+    const hashedPassword = await HashPassword(password);
+    const OTP = OTPGenerator;
+
     const newUser = new User({
       username,
       password: hashedPassword,
       profile: profile || "",
       email,
-      isVerified: false,
       verificationCode: OTP,
     });
-    const savedUser = await newUser.save();
 
-    // Send OTP to the user's email
-    const otpStatus = await sendOTPByEmail(email, OTP);
-
-    res.status(201).send({
+    const saveUser = await newUser.save();
+    if (saveUser) {
+      sendEmail(email, OTP, "REGISTER");
+    }
+    res.status(HTTP_STATUS.OK).send({
       message: "User registration successful",
-      user: savedUser,
-      verificationMail: email,
-      otpExpire: expirationTime,
-      otpStatus: otpStatus ? `OTP sent to ${email}` : "Failed to send OTP",
+      otpStatus: saveUser ? `OTP sent to ${email}` : "Failed to send OTP",
     });
   } catch (error) {
-    return res.status(500).send({
-      message: "Error in register route",
-      error: error.message,
+    return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).send({
+      error: error.message || "Error registering user",
     });
   }
 }
 
-// verifing registration
-export async function verifyRegister(req, res) {
-  const { email, verificationCode } = req.query;
+export async function VerifyRegister(req, res) {
+  const { email, verificationCode } = req.body;
 
   try {
-    const user = await User.findOne({ email, verificationCode });
+    const user = await User.findOne({ email: { $eq: email } });
 
     if (!user) {
-      return res.status(400).send({
-        message: "Invalid verification code",
-      });
-    } else if (Date.now() > user.otpExpire) {
-      // Check if OTP has expired
-      await User.deleteOne({ _id: user._id }); // Delete the user account
-      return res.status(400).send({
-        message: "OTP expired. User account deleted.",
+      return res.status(HTTP_STATUS.NOT_FOUND).send({
+        error: errorMessage.USER_NOT_EXIST,
       });
     }
 
-    // Update the user's isVerified field to true
+    if (user.verificationCode != verificationCode) {
+      return res.status(HTTP_STATUS.BAD_REQUEST).send({
+        error: errorMessage.INCORRECT_OTP,
+      });
+    }
     user.isVerified = true;
-    user.verificationCode = ""; // Clear the verification code
+    user.verificationCode = "";
     await user.save();
-
-    return res.status(200).send({
+    return res.status(HTTP_STATUS.OK).send({
       message: "Account verification successful",
-      isVerified: true, // Add the isVerified property to the response
     });
   } catch (error) {
-    return res.status(500).send({
-      message: "Error in account verification",
-      error: error.message,
+    EmailServer.js;
+    return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).send({
+      error: error.message || "Error in account verification",
     });
   }
 }
 
-
-// POST method for resending verification email
-export async function resendVerificationEmail(req, res) {
-  const { email } = req.query;
+export async function ResendVerificationEmail(req, res) {
+  const { email } = req.body;
   try {
-    // Check if the email exists in the database
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email: { $eq: email } });
+
     if (!user) {
-      return res.status(404).send({
-        message: 'Email not found',
+      return res.status(HTTP_STATUS.NOT_FOUND).send({
+        error: errorMessage.USER_NOT_EXIST,
       });
     }
-
-    // Check if the user is already verified
     if (user.isVerified) {
-      return res.status(400).send({
-        message: 'User is already verified',
+      return res.status(HTTP_STATUS.BAD_REQUEST).send({
+        error: "User is already verified",
       });
     }
-
-    // Generate and save a new verification code
-    const OTP = otpGenerator.generate(6, {
-      lowerCaseAlphabets: false,
-      upperCaseAlphabets: false,
-      specialChars: false,
-    });
-    const expirationTime = Date.now() + 10 * 60 * 1000; // 10 minutes from now
+    const OTP = OTPGenerator;
     user.verificationCode = OTP;
-    user.otpExpire = expirationTime;
+
     await user.save();
+    const emailStatus = await sendEmail(email, OTP, "REGISTER");
 
-    // Send the new verification code via email
-    const emailStatus = await sendOTPByEmail(email, OTP);
-
-    res.status(200).send({
-      message: 'Verification email resent',
-      email,
-      otpExpire: expirationTime,
-      otpStatus: emailStatus ? `OTP sent to ${email}` : 'Failed to send OTP',
+    res.status(HTTP_STATUS.OK).send({
+      message: "Verification email resent successfully",
+      otpStatus: emailStatus ? `OTP sent to ${email}` : "Failed to send OTP",
     });
   } catch (error) {
-    return res.status(500).send({
-      message: 'Error in resending verification email',
-      error: error.message,
+    return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).send({
+      error: error.message || "Error in resending verification email",
     });
   }
 }
 
-
-// post method to login user
-export async function login(req, res) {
-  const { username, password } = req.body;
+export async function Login(req, res) {
   try {
-    const user = await User.findOne({ username });
-    if (!user) {
-      return res.status(400).send({
-        message: "Username does not match",
+    const { email, password } = req.body;
+    if (!email || !password) {
+      return res
+        .status(HTTP_STATUS.BAD_REQUEST)
+        .send({ error: errorMessage.REQUIRED_FIELDS });
+    }
+    const user = await User.findOne({ email: { $eq: email } });
+    if (!(email && password)) {
+      return res.status(HTTP_STATUS.BAD_REQUEST).send({
+        error: errorMessage.REQUIRED_FIELDS,
       });
     }
+    if (!user) {
+      return res.status(HTTP_STATUS.NOT_FOUND).send({
+        error: errorMessage.USER_NOT_EXIST,
+      });
+    }
+    const passwordCheck = await comparePassword(password, user.password);
 
-
-    const passwordCheck = await bcrypt.compare(password, user.password);
     if (!passwordCheck) {
-      return res.status(400).send({
+      return res.status(HTTP_STATUS.BAD_REQUEST).send({
         message: "Password does not match",
       });
     }
-
-
 
     const token = jwt.sign(
       {
         userId: user._id,
         username: user.username,
+        email: user.email,
+        isVerified: user.isVerified,
       },
       process.env.JWT_SECRET,
       { expiresIn: "48h" }
     );
 
-    res.status(200).send({
+    res.status(HTTP_STATUS.OK).send({
       message: "Login successful",
       token: token,
     });
   } catch (error) {
-    return res.status(500).send({
+    return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).send({
       message: "Something went wrong while logging in",
       error: error.message,
     });
@@ -181,58 +164,55 @@ export async function login(req, res) {
 
 // get request to get user data after login
 export async function getUser(req, res) {
-  const { username } = req.params;
+  const username = req.user.username;
   try {
     if (!username) {
-      return res.status(400).send({
-        message: "Invalid username",
+      return res.status(HTTP_STATUS.BAD_REQUEST).send({
+        error: errorMessage.REQUIRED_FIELDS,
       });
     }
 
     const user = await User.findOne({ username }).select("-password").exec();
 
     if (!user) {
-      return res.status(404).send({
-        message: "User not found",
+      return res.status(HTTP_STATUS.NOT_FOUND).send({
+        error: errorMessage.USER_NOT_EXIST,
       });
     }
 
-    return res.status(200).send(user);
+    return res.status(HTTP_STATUS.OK).send(user);
   } catch (error) {
     return res.status(500).send({
-      message: "Unable to get user",
       error: error.message,
     });
   }
 }
 
-// put request to update user
-export async function updateUser(req, res) {
+export async function UpdateUser(req, res) {
   try {
-    const username = req.query.username; 
-    if (username) {
-      const body = req.body;
-
-      const result = await User.updateOne({ username: username }, body);
-
-      if (result.modifiedCount === 0) {
-        return res.status(404).send({
-          message: "User not found",
-        });
-      }
-
-      return res.status(200).send({
-        message: "Records updated",
+    const username = req.user.username;
+    const { newUsername, profile } = req.body;
+    const user = User.findOne({ username: { $eq: username } });
+    if (!user) {
+      return res.status(HTTP_STATUS.NOT_FOUND).send({
+        error: errorMessage.USER_NOT_EXIST,
       });
     }
+    if (profile) {
+      user.profile = profile;
+    }
+    if (newUsername) {
+      user.username = newUsername;
+    }
+    await user.save();
+    return res.status(HTTP_STATUS.OK).send({
+      message: "User updated successfully",
+    });
   } catch (error) {
-    return res.status(500).json({
-      message: "Error in update user route. Contact the developer for help.",
-      error: error.message,
+    return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+      error:
+        error.message ||
+        "Error in update user route. Contact the developer for help.",
     });
   }
 }
-
-
-
-  

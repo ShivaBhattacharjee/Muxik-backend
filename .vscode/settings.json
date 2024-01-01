@@ -3,7 +3,7 @@
     "editor.formatOnSave": true,
     "editor.fontSize": 17,
     "editor.codeActionsOnSave": {
-        "source.fixAll.eslint": true,
-        "source.fixAll.format": true
+        "source.fixAll.eslint": "explicit",
+        "source.fixAll.format": "explicit"
     }
 }

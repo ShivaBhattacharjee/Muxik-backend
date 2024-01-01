@@ -61,6 +61,10 @@ const UserSchema = new mongoose.Schema({
     type: String,
     default: "",
   },
+  isResetPasswordInitiated: {
+    type: Boolean,
+    default: false,
+  },
   resetPasswordOTP: {
     type: String,
     default: null,
