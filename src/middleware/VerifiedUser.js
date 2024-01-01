@@ -4,7 +4,7 @@ import User from "../models/user.model.js";
 
 export async function isVerified(req, res, next) {
   try {
-    let username = req.body.username;
+    const username = req.body.username;
 
     if (!username) {
       return res.status(HTTP_STATUS.BAD_REQUEST).send({
