@@ -50,7 +50,7 @@ export async function addLikedSong(req, res) {
       });
     }
 
-    const user = await User.findOne({ username });
+    const user = await User.findOne({ username: { $eq: username } });
     if (!user) {
       return res.status(HTTP_STATUS.NOT_FOUND).send({
         error: errorMessage.USER_NOT_EXIST,
@@ -88,7 +88,7 @@ export async function removeLikedSong(req, res) {
       });
     }
 
-    const user = await User.findOne({ username });
+    const user = await User.findOne({ username: { $eq: username } });
     if (!user) {
       return res.status(HTTP_STATUS.NOT_FOUND).send({
         error: errorMessage.USER_NOT_EXIST,

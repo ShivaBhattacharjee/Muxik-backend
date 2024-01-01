@@ -12,7 +12,7 @@ export async function isVerified(req, res, next) {
       });
     }
 
-    const user = await User.findOne({ username });
+    const user = await User.findOne({ username: { $eq: username } });
 
     if (!user) {
       return res.status(HTTP_STATUS.NOT_FOUND).send({
