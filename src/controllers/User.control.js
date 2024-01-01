@@ -185,22 +185,23 @@ export async function getUser(req, res) {
 
 export async function UpdateUser(req, res) {
   try {
-    const username = req.body;
-    if (username) {
-      const body = req.body;
-
-      const result = await User.updateOne({ username: username }, body);
-
-      if (result.modifiedCount === 0) {
-        return res.status(HTTP_STATUS.NOT_FOUND).send({
-          message: errorMessage.USER_NOT_EXIST,
-        });
-      }
-
-      return res.status(HTTP_STATUS.OK).send({
-        message: "Records updated",
+    const { username, newUsername, profile } = req.body;
+    const user = User.findOne({ username: username });
+    if (!user) {
+      return res.status(HTTP_STATUS.NOT_FOUND).send({
+        error: errorMessage.USER_NOT_EXIST,
       });
     }
+    if (profile) {
+      user.profile = profile;
+    }
+    if (newUsername) {
+      user.username = newUsername;
+    }
+    await user.save();
+    return res.status(HTTP_STATUS.OK).send({
+      message: "User updated successfully",
+    });
   } catch (error) {
     return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
       error:
