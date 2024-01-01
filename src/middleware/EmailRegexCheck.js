@@ -7,3 +7,5 @@ const ValidateEmailRegex = (req, res, next) => {
 
   next();
 };
+
+export default ValidateEmailRegex;
