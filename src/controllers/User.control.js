@@ -15,7 +15,7 @@ export async function Register(req, res) {
         error: errorMessage.REQUIRED_FIELDS,
       });
     }
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({ email: { $eq: email } });
 
     if (existingUser) {
       return res.status(HTTP_STATUS.BAD_REQUEST).send({
