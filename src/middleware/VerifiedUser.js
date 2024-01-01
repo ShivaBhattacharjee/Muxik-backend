@@ -4,7 +4,7 @@ import User from "../models/user.model.js";
 
 export async function isVerified(req, res, next) {
   try {
-    const username = req.body.username;
+    const username = req.body.email || req.body.username;
 
     if (!username) {
       return res.status(HTTP_STATUS.BAD_REQUEST).send({
@@ -12,7 +12,7 @@ export async function isVerified(req, res, next) {
       });
     }
 
-    const user = await User.findOne({ username: { $eq: username } });
+    const user = await User.findOne({ $eq: username });
 
     if (!user) {
       return res.status(HTTP_STATUS.NOT_FOUND).send({

@@ -25,7 +25,7 @@ const jwtTokenCheck = (req, res, next) => {
         .json({ message: "Invalid token format: Missing username" });
     }
 
-    req.user = { username }; // Attach the username to the request object
+    req.user = { username };
     next();
   } catch (error) {
     return res.status(401).json({ message: error.message });

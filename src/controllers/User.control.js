@@ -164,7 +164,7 @@ export async function Login(req, res) {
 
 // get request to get user data after login
 export async function getUser(req, res) {
-  const { username } = req.params;
+  const username = req.user.username;
   try {
     if (!username) {
       return res.status(HTTP_STATUS.BAD_REQUEST).send({
@@ -190,7 +190,8 @@ export async function getUser(req, res) {
 
 export async function UpdateUser(req, res) {
   try {
-    const { username, newUsername, profile } = req.body;
+    const username = req.user.username;
+    const { newUsername, profile } = req.body;
     const user = User.findOne({ username: { $eq: username } });
     if (!user) {
       return res.status(HTTP_STATUS.NOT_FOUND).send({

@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 
 function decryptJwt(token) {
   try {
-    const decoded = jwt.verify(token, process.env.JWT_TOKEN);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
     return {
       userId: decoded._id,
       username: decoded.username,

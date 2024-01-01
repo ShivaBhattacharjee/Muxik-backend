@@ -1,7 +1,7 @@
 import { HTTP_STATUS, errorMessage } from "../enums/enums.js";
 import User from "../models/user.model.js";
 export async function getLikedSongs(req, res) {
-  const { username } = req.params;
+  const username = req.user.username;
   const { page = 1 } = req.query; // Default page number is 1
   const limit = 12; // Number of songs per page
 
@@ -42,7 +42,8 @@ export async function getLikedSongs(req, res) {
 
 // POST method to add a liked song for a user
 export async function addLikedSong(req, res) {
-  const { username, songId, songName, banner } = req.body;
+  const username = req.user.username;
+  const { songId, songName, banner } = req.body;
   try {
     if (!username || !songId || !songName || !banner) {
       return res.status(HTTP_STATUS.BAD_REQUEST).send({
@@ -80,7 +81,8 @@ export async function addLikedSong(req, res) {
 
 // DELETE method to remove a liked song for a user
 export async function removeLikedSong(req, res) {
-  const { username, songId } = req.params;
+  const username = req.user.username;
+  const { songId } = req.params;
   try {
     if (!username || !songId) {
       return res.status(HTTP_STATUS.BAD_REQUEST).send({

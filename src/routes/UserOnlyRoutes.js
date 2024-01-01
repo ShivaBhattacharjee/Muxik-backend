@@ -17,7 +17,7 @@ import jwtTokenCheck from "../middleware/JwtTokenCheck.js";
 
 const UserRoutes = Router();
 
-UserRoutes.route("/likedSongs")
+UserRoutes.route("/liked-songs")
   .all(jwtTokenCheck)
   .get((req, res) => {
     getLikedSongs(req, res);
@@ -41,7 +41,7 @@ UserRoutes.route("/history")
     removeSongFromHistory(req, res);
   });
 
-UserRoutes.route("/userinfo")
+UserRoutes.route("/user-info")
   .all(jwtTokenCheck)
   .get((req, res) => {
     getUser(req, res);
