@@ -12,7 +12,9 @@ export async function getLikedSongs(req, res) {
       });
     }
 
-    const user = await User.findOne({ username }).select("likedSongs").exec();
+    const user = await User.findOne({ username: { $eq: username } })
+      .select("likedSongs")
+      .exec();
 
     if (!user) {
       return res.status(HTTP_STATUS.NOT_FOUND).send({

@@ -6,6 +6,7 @@ import {
   VerifyRegister,
 } from "../controllers/User.control.js";
 import ValidateEmailRegex from "../middleware/EmailRegexCheck.js";
+import { isVerified } from "../middleware/VerifiedUser.js";
 const Validationrouter = Router();
 
 // validation routes
@@ -19,6 +20,6 @@ Validationrouter.route("/resent-verification-otp").post(
   ResendVerificationEmail
 );
 Validationrouter.route("/reset-password").post(ValidateEmailRegex);
-Validationrouter.route("/login").post(ValidateEmailRegex, Login);
+Validationrouter.route("/login").post(ValidateEmailRegex, isVerified, Login);
 
 export default Validationrouter;

@@ -1,49 +1,38 @@
 // isVerifiedMiddleware.js
-import User from '../models/user.model.js';
+import { HTTP_STATUS, errorMessage } from "../enums/enums.js";
+import User from "../models/user.model.js";
 
 export async function isVerified(req, res, next) {
   try {
     let username = req.body.username;
-    const { usernameQuery } = req.query;
 
-    // If username is not in the body, check for usernameQuery in the query parameters
     if (!username) {
-      username = usernameQuery;
-    }
-
-    // If there's still no username, extract it from the request parameters
-    if (!username) {
-      username = req.params.username;
-    }
-
-    // Check if a valid username is provided
-    if (!username) {
-      return res.status(400).send({
-        message: "Invalid username",
+      return res.status(HTTP_STATUS.BAD_REQUEST).send({
+        error: errorMessage.USER_NOT_EXIST,
       });
     }
 
     const user = await User.findOne({ username });
 
     if (!user) {
-      return res.status(404).send({
-        message: "User not found",
+      return res.status(HTTP_STATUS.NOT_FOUND).send({
+        error: errorMessage.NOT_FOUND,
       });
     }
 
     if (!user.isVerified) {
-      return res.status(403).send({
-        message: "User is not verified",
+      return res.status(HTTP_STATUS.NOT_AUTHORIZED).send({
+        error: errorMessage.USER_NOT_VERIFIED,
       });
     }
 
-    // If the user is verified, you can proceed to the next middleware or the route handler
-    req.user = user; // Attach the user object to the request for further usage in other middleware/route handlers
+    req.user = user;
     next();
   } catch (error) {
-    return res.status(500).json({
-      message: "Error in isVerified middleware. Contact the developer for help.",
-      error: error.message,
+    return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+      error:
+        error.message ||
+        "Error in isVerified middleware. Contact the developer for help.",
     });
   }
 }

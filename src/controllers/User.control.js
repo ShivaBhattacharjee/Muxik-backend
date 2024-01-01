@@ -53,7 +53,7 @@ export async function VerifyRegister(req, res) {
   const { email, verificationCode } = req.body;
 
   try {
-    const user = await User.findOne({ email, verificationCode });
+    const user = await User.findOne({ email: { $eq: email } });
 
     if (!user) {
       return res.status(HTTP_STATUS.NOT_FOUND).send({
@@ -83,11 +83,16 @@ export async function VerifyRegister(req, res) {
 export async function ResendVerificationEmail(req, res) {
   const { email } = req.body;
   try {
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email: { $eq: email } });
 
     if (!user) {
       return res.status(HTTP_STATUS.NOT_FOUND).send({
         error: errorMessage.USER_NOT_EXIST,
+      });
+    }
+    if (user.isVerified) {
+      return res.status(HTTP_STATUS.BAD_REQUEST).send({
+        error: "User is already verified",
       });
     }
     const OTP = OTPGenerator;
@@ -115,7 +120,7 @@ export async function Login(req, res) {
         .status(HTTP_STATUS.BAD_REQUEST)
         .send({ error: errorMessage.REQUIRED_FIELDS });
     }
-    const user = await User.findOne({ email: email });
+    const user = await User.findOne({ email: { $eq: email } });
     if (!(email && password)) {
       return res.status(HTTP_STATUS.BAD_REQUEST).send({
         error: errorMessage.REQUIRED_FIELDS,
@@ -186,7 +191,7 @@ export async function getUser(req, res) {
 export async function UpdateUser(req, res) {
   try {
     const { username, newUsername, profile } = req.body;
-    const user = User.findOne({ username: username });
+    const user = User.findOne({ username: { $eq: username } });
     if (!user) {
       return res.status(HTTP_STATUS.NOT_FOUND).send({
         error: errorMessage.USER_NOT_EXIST,
