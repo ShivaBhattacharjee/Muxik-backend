@@ -31,5 +31,8 @@
     "nodemon": "^2.0.22",
     "otp-generator": "^4.0.1"
   },
-  "repository": "https://github.com/ShivaBhattacharjee/Muxik-backend.git"
+  "repository": "https://github.com/ShivaBhattacharjee/Muxik-backend.git",
+  "devDependencies": {
+    "prettier": "3.2.4"
+  }
 }

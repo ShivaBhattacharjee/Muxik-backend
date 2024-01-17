@@ -4,7 +4,7 @@
   </a>
 <br/>
   <h3 align="center">Muxik's Backend</h3>
-  <p align="center">
+  <p align="center" >
     Backend logic for login signup and storing history/liked
     <br/>
     <br/>
@@ -13,6 +13,18 @@
     <a href="https://github.com/ShivaBhattacharjee/Muxik-backend/issues">Request Feature</a>
   </p>
 </p>
+
+
+<div align="center">
+
+[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
+[![Deno](https://github.com/ShivaBhattacharjee/AnimeTrix-next/actions/workflows/deno.yml/badge.svg)](https://github.com/ShivaBhattacharjee/AnimeTrix-next/actions/workflows/deno.yml)
+![GitHub repo size](https://img.shields.io/github/repo-size/shivabhattacharjee/muxik-backend)
+![jwt](https://jwt.io/img/badge-compatible.svg)
+[![Docker Build](https://github.com/ShivaBhattacharjee/Muxik-backend/actions/workflows/docker_build.yml/badge.svg)](https://github.com/ShivaBhattacharjee/Muxik-backend/actions/workflows/docker_build.yml)
+
+</div>
+
 
 
 
