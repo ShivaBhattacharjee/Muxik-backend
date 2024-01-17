@@ -1,5 +1,11 @@
 README.md
 .git
 .gitignore
+.env*
 /.vscode
-node_modules
+/node_modules
+/.github
+/bin
+.vercel.json
+LICENSE
+
