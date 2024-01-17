@@ -41,6 +41,7 @@
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
     - [Docker](#docker)
+    - [Example](#example)
 - [Routes](#routes)
   - [Authentication](#authentication)
     - [POST](#post)
@@ -117,6 +118,15 @@ npm start
 
 ```bash
 sudo docker run -p <your-port-number>:3000 \
+-e MONGODB_URI=yourmongodburi \
+-e JWT_SECRET=yourjwttoken \
+-e EMAIL_ID=youremail \
+-e EMAIL_PASSWORD=yourpassword \
+immashiva/muxikapi:latest
+```
+#### Example
+```bash
+sudo docker run -p 8080:3000 \
 -e MONGODB_URI=yourmongodburi \
 -e JWT_SECRET=yourjwttoken \
 -e EMAIL_ID=youremail \
