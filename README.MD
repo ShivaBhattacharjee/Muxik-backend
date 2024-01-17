@@ -40,6 +40,7 @@
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
+    - [Docker](#docker)
 - [Routes](#routes)
   - [Authentication](#authentication)
     - [POST](#post)
@@ -111,6 +112,18 @@ Or
 ```sh
 npm start
 ```
+
+#### Docker
+
+```bash
+sudo docker run -p <your-port-number>:3000 \
+-e MONGODB_URI=yourmongodburi \
+-e JWT_SECRET=yourjwttoken \
+-e EMAIL_ID=youremail \
+-e EMAIL_PASSWORD=yourpassword \
+immashiva/muxikapi:latest
+```
+
 
 ## Routes
 > **⚠️ Note: Bearer Token can be obtained after successfull login**
