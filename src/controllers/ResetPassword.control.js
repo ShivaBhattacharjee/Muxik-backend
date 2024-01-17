@@ -7,7 +7,7 @@ import { HashPassword } from "../helpers/hashPassword.js";
 export async function InitiateResetPassword(req, res) {
   try {
     const { email } = req.body;
-    const user = User.findOne({ email });
+    const user = User.findOne({ email: { $eq: email } });
     if (!user) {
       return res.status(HTTP_STATUS.NOT_FOUND).send({
         error: errorMessage.USER_NOT_EXIST,
